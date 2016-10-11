@@ -29,22 +29,19 @@ T = 2
 train = [None]*T
 data = [None]*T
 
-for i in range(T):
-	#relative path
-	#train1 = nib.load("../data/set_train/train_"+str(i+1)+".nii")
-
-	#path from usb key
-	train[i] = nib.load("/run/media/lionelt/04F6-B693/ML/data/set_train/train_"+str(i+1)+".nii")
-	data[i] = train[i].get_data()
-
-ages = np.genfromtxt('../data/Target.csv', delimiter="\n")
+ages = np.genfromtxt('../data/targets.csv', delimiter="\n")
 
 #black->white colormap
 colormap = mpl.colors.LinearSegmentedColormap.from_list('my_colormap',['black','white'],256)
 
 for i in range(T):
-	##### plot the i th brain projected on x and y axis
+	print("plotting train"+str(i+1)+"...")
+	#relative path
+	train[i] = nib.load("../data/set_train/train_"+str(i+1)+".nii")
 
+	data[i] = train[i].get_data()
+
+	print("computing XY...")
 	#compute means along z-axis
 	mean_z=np.empty([X,Y])
 	for x in range(X):
@@ -54,19 +51,7 @@ for i in range(T):
 		    	mean_z[x,y]+=data[i][x, y, z]
 		mean_z[x,y]/=Z
 
-	#plot and save figure
-	fig_xy = plt.figure(3*i)
-	img_xy = plt.imshow(mean_z,interpolation='nearest',
-		            cmap=colormap,
-		            origin='lower')
-	plt.colorbar(img_xy,cmap=colormap)
-	plt.title("Train"+str(i+1)+" projected on XY (age "+str(int(ages[i]))+")")
-	plt.xlabel("x")
-	plt.ylabel("y")
-	fig_xy.savefig("../plots/plot_age"+str(int(ages[i]))+"_train"+str(i+1)+"_xy.png")
-
-	##### plot the i th brain projected on x and z axis
-
+	print("computing XZ...")
 	#compute means along y-axis
 	mean_y=np.empty([X,Z])
 	for x in range(X):
@@ -76,19 +61,7 @@ for i in range(T):
 			mean_y[x,z]+=data[i][x, y, z]
 		mean_y[x,z]/=Y
 
-	#plot and save figure
-	fig_xz = plt.figure(3*i+1)
-	img_xz = plt.imshow(mean_y,interpolation='nearest',
-		            cmap=colormap,
-		            origin='lower')
-	plt.colorbar(img_xz,cmap=colormap)
-	plt.title("Train"+str(i+1)+" projected on XZ (age "+str(int(ages[i]))+")")
-	plt.xlabel("x")
-	plt.ylabel("z")
-	fig_xz.savefig("../plots/plot_age"+str(int(ages[i]))+"_train"+str(i+1)+"_xz.png")
-
-	##### plot the i th brain projected on z and y axis
-
+	print("computing ZY...")
 	#compute means along x-axis
 	mean_x=np.empty([Z,Y])
 	for z in range(Z):
@@ -98,13 +71,35 @@ for i in range(T):
 			mean_x[z,y]+=data[i][x, y, z]
 		mean_x[z,y]/=X
 
-	#plot and save figure
-	fig_zy = plt.figure(3*i+2)
+	#plot the figure with 3 subplots
+	fig = plt.figure(num=1, figsize=(16, 5))
+
+	plt.subplot(131) # 1 row, 3 columns, 1st position
+	img_xy = plt.imshow(mean_z,interpolation='nearest',
+		            cmap=colormap,
+		            origin='lower')
+	#plt.colorbar(img_xy,cmap=colormap)
+	plt.title("Train"+str(i+1)+" projected on XY (age "+str(int(ages[i]))+")")
+	plt.xlabel("x")
+	plt.ylabel("y")
+	
+	plt.subplot(132) # 1 row, 3 columns, 2nd position
+	img_xz = plt.imshow(mean_y,interpolation='nearest',
+		            cmap=colormap,
+		            origin='lower')
+	#plt.colorbar(img_xz,cmap=colormap)
+	plt.title("Train"+str(i+1)+" projected on XZ (age "+str(int(ages[i]))+")")
+	plt.xlabel("x")
+	plt.ylabel("z")
+
+	plt.subplot(133) # 1 row, 3 columns, 3rd position
 	img_zy = plt.imshow(mean_x,interpolation='nearest',
 		            cmap=colormap,
 		            origin='lower')
-	plt.colorbar(img_zy,cmap=colormap)
+	#plt.colorbar(img_zy,cmap=colormap)
 	plt.title("Train"+str(i+1)+" projected on ZY (age "+str(int(ages[i]))+")")
 	plt.xlabel("z")
 	plt.ylabel("y")
-	fig_zy.savefig("../plots/plot_age"+str(int(ages[i]))+"_train"+str(i+1)+"_zy.png")
+
+	fig.savefig("../plots/plot_age"+str(int(ages[i]))+"_train"+str(i+1)+".png")
+	plt.clf() #close figure
