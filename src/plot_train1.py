@@ -1,6 +1,6 @@
 ########################################################################
 
-# Pyhton script which plots the first brain (train1) projected onto the 3 plans
+# Python script which plots all the brains projected onto the 3 plans
 
 ########################################################################
 
@@ -26,11 +26,13 @@ Z = 10
 '''
 
 #relative path
-train1 = nib.load("../data/set_train/train_1.nii")
+#train1 = nib.load("../data/set_train/train_1.nii")
 
 #path from usb key
-#train1 = nib.load("/run/media/lionelt/04F6-B693/ML/data/set_train/train_1.nii")
+train1 = nib.load("/run/media/lionelt/04F6-B693/ML/data/set_train/train_1.nii")
 data = train1.get_data()
+
+ages = np.genfromtxt('../data/Target.csv', delimiter="\n")
 
 #black->white colormap
 colormap = mpl.colors.LinearSegmentedColormap.from_list('my_colormap',['black','white'],256)
@@ -52,7 +54,10 @@ img_xy = plt.imshow(mean_z,interpolation='nearest',
                     cmap=colormap,
                     origin='lower')
 plt.colorbar(img_xy,cmap=colormap)
-fig_xy.savefig("plots/plot_train1_xy.png")
+plt.title("Train1 projected on XY (age "+str(int(ages[0]))+")")
+plt.xlabel("x")
+plt.ylabel("y")
+fig_xy.savefig("../plots/plot_age"+str(int(ages[0]))+"_train1_xy.png")
 
 ##### plot the 1st brain projected on x and z axis
 
@@ -71,7 +76,10 @@ img_xz = plt.imshow(mean_y,interpolation='nearest',
                     cmap=colormap,
                     origin='lower')
 plt.colorbar(img_xz,cmap=colormap)
-fig_xz.savefig("plots/plot_train1_xz.png")
+plt.title("Train1 projected on XZ (age "+str(int(ages[0]))+")")
+plt.xlabel("x")
+plt.ylabel("z")
+fig_xz.savefig("../plots/plot_age"+str(int(ages[0]))+"_train1_xz.png")
 
 ##### plot the 1st brain projected on z and y axis
 
@@ -90,4 +98,7 @@ img_zy = plt.imshow(mean_x,interpolation='nearest',
                     cmap=colormap,
                     origin='lower')
 plt.colorbar(img_zy,cmap=colormap)
-fig_zy.savefig("plots/plot_train1_zy.png")
+plt.title("Train1 projected on ZY (age "+str(int(ages[0]))+")")
+plt.xlabel("z")
+plt.ylabel("y")
+fig_zy.savefig("../plots/plot_age"+str(int(ages[0]))+"_train1_zy.png")
