@@ -80,8 +80,8 @@ for i in range(T):
 		            origin='lower')
 	#plt.colorbar(img_xy,cmap=colormap)
 	plt.title("Train"+str(i+1)+" projected on XY (age "+str(int(ages[i]))+")")
-	plt.xlabel("x")
-	plt.ylabel("y")
+	plt.xlabel("y")
+	plt.ylabel("x")
 	
 	plt.subplot(132) # 1 row, 3 columns, 2nd position
 	img_xz = plt.imshow(mean_y,interpolation='nearest',
@@ -89,8 +89,8 @@ for i in range(T):
 		            origin='lower')
 	#plt.colorbar(img_xz,cmap=colormap)
 	plt.title("Train"+str(i+1)+" projected on XZ (age "+str(int(ages[i]))+")")
-	plt.xlabel("x")
-	plt.ylabel("z")
+	plt.xlabel("z")
+	plt.ylabel("x")
 
 	plt.subplot(133) # 1 row, 3 columns, 3rd position
 	img_zy = plt.imshow(mean_x,interpolation='nearest',
@@ -98,8 +98,8 @@ for i in range(T):
 		            origin='lower')
 	#plt.colorbar(img_zy,cmap=colormap)
 	plt.title("Train"+str(i+1)+" projected on ZY (age "+str(int(ages[i]))+")")
-	plt.xlabel("z")
-	plt.ylabel("y")
+	plt.xlabel("y")
+	plt.ylabel("z")
 
 	fig.savefig("../plots/plot_age"+str(int(ages[i]))+"_train"+str(i+1)+".png")
 	plt.clf() #close figure
