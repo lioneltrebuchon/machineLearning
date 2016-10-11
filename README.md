@@ -7,6 +7,15 @@
 3. Do we need scypy?
 4. Do we needscikit-learn ?
 5. Do we need pandas ?
+Install on linux systems (and brutus/euler servers)
+module load python/2.7.6
+python get-pip.py --user
+python -m pip install --user nibabel
+python -m pip install --user numpy
+python -m pip install --user matplotlib
+python -m pip install --user scipy
+
+
 
 ## Main TODO 
 We could try to use the Issues tab instead.
