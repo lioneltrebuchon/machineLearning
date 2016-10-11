@@ -1,5 +1,8 @@
 # machineLearning
 
+## Brutus
+bsub -n 2 -W 6400 -R "rusage[mem=8000]" /cluster/apps/xvfb-run/xvfb-run matlab -singleCompThread -nodisplay -r programName
+
 ## Dependencies
 
 1. nibabel
