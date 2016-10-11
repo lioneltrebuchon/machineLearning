@@ -38,21 +38,18 @@ colormap = mpl.colors.LinearSegmentedColormap.from_list('my_colormap',['black','
 
 
 ##### calculate color histograph over 1 picture
-histo=np.empty([2900])
+
+intList=np.empty(X*Y*Z)
 for x in range(X):
-    for z in range(Z):
-        for y in range(Y):
-			histo[data[x,y,z]] += 1
-print(np.matrix(histo))
+    for y in range(Y):
+        for z in range(Z):
+			intList[z+(y+x*Y)*Z]=int(round(data[x,y,z]))
+
 
 # plot and save figure
-fig_histo = plt.hist(1)
-img_histo = plt.imshow(histo,interpolation='nearest',
-                    cmap=colormap,
-                    origin='lower')
+histo = plt.figure(0)
+plt.hist(intList)
 plt.title("Histogram of train1")
 plt.xlabel("Values of the 3D brain")
 plt.ylabel("Frequencies")
-plt.axis([0,2900,0,max[histo]])
-plt.savefig("plots/histo_train1.png")
-
+histo.savefig("../plots/plot_train1_histo.png")
