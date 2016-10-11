@@ -26,10 +26,10 @@ Z = 10
 '''
 
 #relative path
-#train1 = nib.load("../data/set_train/train_1.nii")
+train1 = nib.load("../data/set_train/train_1.nii")
 
 #path from usb key
-train1 = nib.load("/run/media/lionelt/04F6-B693/ML/data/set_train/train_1.nii")
+#train1 = nib.load("/run/media/lionelt/04F6-B693/ML/data/set_train/train_1.nii")
 data = train1.get_data()
 
 #black->white colormap
@@ -52,7 +52,7 @@ img_xy = plt.imshow(mean_z,interpolation='nearest',
                     cmap=colormap,
                     origin='lower')
 plt.colorbar(img_xy,cmap=colormap)
-fig_xy.savefig("plots/train1_proj_xy.png")
+fig_xy.savefig("plots/plot_train1_xy.png")
 
 ##### plot the 1st brain projected on x and z axis
 
@@ -71,7 +71,7 @@ img_xz = plt.imshow(mean_y,interpolation='nearest',
                     cmap=colormap,
                     origin='lower')
 plt.colorbar(img_xz,cmap=colormap)
-fig_xz.savefig("plots/train1_proj_xz.png")
+fig_xz.savefig("plots/plot_train1_xz.png")
 
 ##### plot the 1st brain projected on z and y axis
 
@@ -90,4 +90,4 @@ img_zy = plt.imshow(mean_x,interpolation='nearest',
                     cmap=colormap,
                     origin='lower')
 plt.colorbar(img_zy,cmap=colormap)
-fig_zy.savefig("plots/train1_proj_zy.png")
+fig_zy.savefig("plots/plot_train1_zy.png")
