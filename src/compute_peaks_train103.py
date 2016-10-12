@@ -38,7 +38,7 @@ for x in range(X):
 			if data[x,y,z]!=0:
 				intList.append(int(data[x,y,z]))
 
-# plot and save figure
+# compute (and plote if show=True) the peaks, and print them
 histo = plt.figure(0)
 values=plt.hist(intList, 200)
 peakIndexes=detect_peaks(values[0], mph = 100, mpd = 30, show=True)
