@@ -34,8 +34,8 @@ intList=[]
 for x in range(X):
     for y in range(Y):
         for z in range(Z):
-			if data[x,y,z]!=0:
-				intList.append(int(data[x,y,z]))
+            if data[x,y,z]!=0:
+                intList.append(int(data[x,y,z]))
 
 # plot and save figure
 histo = plt.figure(0)
