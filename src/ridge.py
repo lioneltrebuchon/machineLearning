@@ -34,9 +34,8 @@ train1 = nib.load("/run/media/lionelt/04F6-B693/ML/data/set_train/train_1.nii")
 data = train1.get_data()
 
 
-reg = linear_model.Ridge (alpha = .5)
-
-# linear_model.RidgeCV(alphas=[0.1])
-# clf.fit(X,Y)
-# score = cross_validation.cross_val_score()
-# output_data= clf.predict(X_t).astype(int)
+reg = linear_model.Ridge (alpha = [0.5,0.5,0.5])
+linear_model.RidgeCV(alphas=[0.1])
+clf.fit(X,labels) # labels are the age
+score = sklearn.cross_validation.cross_val_score()
+output_data= clf.predict(X_t).astype(int)
