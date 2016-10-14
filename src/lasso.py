@@ -19,25 +19,6 @@ X = 175
 Y = 207
 Z = 175
 
-''' #for testing
-X = 10
-Y = 10
-Z = 10
-'''
-
-#relative path
-#train1 = nib.load("../data/set_train/train_1.nii")
-
-#path from usb key
-train1 = nib.load("/run/media/lionelt/04F6-B693/ML/data/set_train/train_1.nii")
-data = train1.get_data()
-
-
-modelRidge = linear_model.RidgeCV(alphas = [0.5,0.5,0.5])
+modelLasso = linear_model.Lasso(alpha=1.0)
 
 modelRidge.fit(image,age)
-
-score = sk.cross_validation.cross_val_score(modelRidge, image, age, cv=5)
-
-output_data= modelRidge.
-predict(toPredict).astype(int)
