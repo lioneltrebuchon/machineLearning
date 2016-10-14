@@ -47,12 +47,11 @@ for i in xrange(T):
         # store all the non zero values in a 1D list
         intList=[]
         print("plotting histogram of slice"+str(cut)+"...") 
-        for x in range(cut*sizeCut):
+        for x in range((cut-1)*sizeCut,cut*sizeCut):
             for y in range(Y):
                 for z in range(Z):
                     if data[i][x,y,z]!=0:
                         intList.append(int(data[i][x,y,z]))
-
         # plot and save figure
         histo = plt.figure(cut)
         plt.hist(intList, 200)
