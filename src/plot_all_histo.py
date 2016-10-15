@@ -25,7 +25,7 @@ Y = 10
 Z = 10
 T = 2
 '''
-T = 1
+T = 2
 
 train = [None]*T
 data = [None]*T
@@ -50,7 +50,7 @@ for i in range(T):
     # plot and save figure
     histo = plt.figure(0)
     plt.hist(intList, 50)
-    plt.axis([0, 2800, 0, 50000])
+    plt.axis([0, 2800, 0, 60000])
     plt.title("Histogram of Train"+str(i+1)+" (age "+str(int(ages[i]))+")")
     plt.xlabel("Values of the 3D brain")
     plt.ylabel("Frequencies")
