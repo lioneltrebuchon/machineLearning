@@ -1,8 +1,8 @@
-########################################################################
+#####################################################################################################
 
-# Python script which plots an histogram for each training brain
+# Python script which computes the peaks for each training brain and save them in a peaks.csv file
 
-########################################################################
+#####################################################################################################
 
 import numpy as np
 import nibabel as nib
@@ -33,7 +33,8 @@ peaksFile = open('../results/peaks.csv','w')
 
 for i in range(T):
     print("Computing peaks of train"+str(i+1)+"...")
-    peaksFile.write(str(i+1)+', ') 
+    peaksFile.write(str(i+1)+', ')
+    peaksFile.write(str(ages[i])+', ') 
     #relative path
     train[i] = nib.load("../data/set_train/train_"+str(i+1)+".nii")
 
@@ -49,7 +50,7 @@ for i in range(T):
 
     # compute the peaks, print them, and save them in results/peaks.csv
     values=plt.hist(intList, 200)
-    peakIndexes=detect_peaks(values[0], mph = 100, mpd = 30, show=False)
+    peakIndexes=detect_peaks(values[0], mph = 1000, mpd = 30, show=False)
     peaks=[]
     print("There are "+str(len(peakIndexes))+" peaks:")
     peaksFile.write(str(len(peakIndexes))) 
