@@ -26,13 +26,13 @@ Z = 10
 '''
 
 #relative path
-#train1 = nib.load("../data/set_train/train_1.nii")
+train1 = nib.load("../data/set_train/train_1.nii")
 
 #path from usb key
-train1 = nib.load("/run/media/lionelt/04F6-B693/ML/data/set_train/train_1.nii")
+#train1 = nib.load("/run/media/lionelt/04F6-B693/ML/data/set_train/train_1.nii")
 data = train1.get_data()
 
-ages = np.genfromtxt('../data/Target.csv', delimiter="\n")
+ages = np.genfromtxt('../data/targets.csv', delimiter="\n")
 
 #black->white colormap
 colormap = mpl.colors.LinearSegmentedColormap.from_list('my_colormap',['black','white'],256)

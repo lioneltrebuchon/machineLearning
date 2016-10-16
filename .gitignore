@@ -6,3 +6,5 @@
 *~
 *.pyc
 *.csv
+*.zip
+*.tar.gz
