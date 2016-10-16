@@ -1,7 +1,7 @@
 # machineLearning
 
-## Brutus
-bsub -n 2 -W 6400 -R "rusage[mem=8000]" /cluster/apps/xvfb-run/xvfb-run matlab -singleCompThread -nodisplay -r programName
+## Euler
+bsub -n 2 -R "rusage[mem=8000]" python -singleCompThread -r compute_all_peaks.py 
 
 ## Dependencies
 

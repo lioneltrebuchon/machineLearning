@@ -9,8 +9,7 @@ import nibabel as nib
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from sklearn import linear_model
-
-#import sklearn as sk
+import sklearn as sk
 #from sklearn.linear_model import Lasso
 
 import os, sys
@@ -49,20 +48,8 @@ modelRidge.fit(X,Y)
 
 # Cross validation
 # we compute cv times the score with different splits each time (partioning)
-score = cross_validation.cross_val_score(modelRidge, datatofit, targetvariable, cv=5)
+score = sk.cross_validation.cross_val_score(modelRidge, datatofit, targetvariable, cv=5)
 
 # Prediction
-# datatopredict = iamges to predict
-predicteddata= modelRidge.predict(datatopredict).astype(int)
-
-
-
-# LASSO REGRESSION
-
-import sklearn
-
-# We choose one value of alpha
-modelLasso = linear_model.Lasso(alpha=1.0)
-
-# We compute the model
-modelRidge.fit(X,Y)
+# toPredict = images to predict
+predicteddata= modelRidge.predict(toPredict).astype(int)

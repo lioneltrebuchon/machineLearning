@@ -26,7 +26,7 @@ Z = 50
 '''
 
 #relative path
-train103 = nib.load("../data/set_train/train_103.nii")
+train103=nib.load("../data/set_train/train_103.nii")
 
 data = train103.get_data()
 
@@ -41,7 +41,7 @@ for x in range(X):
 # compute (and plote if show=True) the peaks, and print them
 histo = plt.figure(0)
 values=plt.hist(intList, 200)
-peakIndexes=detect_peaks(values[0], mph = 100, mpd = 30, show=True)
+peakIndexes=detect_peaks(values[0], mph = 100, mpd = 20, show=True)
 peaks=[]
 print("There are "+str(len(peakIndexes))+" peaks:")
 print(peakIndexes)
