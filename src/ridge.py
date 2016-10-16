@@ -8,48 +8,121 @@ import numpy as np
 import nibabel as nib
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-from sklearn import linear_model
 import sklearn as sk
-#from sklearn.linear_model import Lasso
+from sklearn import linear_model
+from sklearn.linear_model import Lasso
 
 import os, sys
 
-#'''
-X = 175
-Y = 207
-Z = 175
-
-''' #for testing
-X = 10
-Y = 10
-Z = 10
-'''
-
-#relative path
+""" Relative path """
 #train1 = nib.load("../data/set_train/train_1.nii")
 
-#path from usb key
-train1 = nib.load("/run/media/lionelt/04F6-B693/ML/data/set_train/train_1.nii")
-data = train1.get_data()
+""" Path from usb key """
+#train1 = nib.load("/run/media/lionelt/04F6-B693/ML/data/set_train/train_1.nii")
 
-# RIDGE REGRESSION
+#data = train1.get_data()
 
-import sklearn
+# Prepare the different features for the regression and then create the input array features
+feature1 = np.empty(278, dtype=float)
+feature1 = np.genfromtxt('C:\Users\barth_000\Desktop\ML Project\Project1\p2_x.csv', delimiter="\n")
 
-# More info at :
-# http://scikit-learn.org/stable/tutorial/basic/tutorial.html
-# http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_score.html#sklearn.model_selection.cross_val_score
+feature2 = np.empty(278, dtype=float)
+feature2 = np.genfromtxt('C:\Users\barth_000\Desktop\ML Project\Project1\p3_x.csv', delimiter="\n")
 
-# We choose several value of alpha
-modelRidge = linear_model.RidgeCV(alphas=[0.1, 0.2, 0.3])
+feature3 = np.empty(278, dtype=float)
+feature3 = np.genfromtxt('C:\Users\barth_000\Desktop\ML Project\Project1\p2_y.csv', delimiter="\n")
 
-# We compute the model
-modelRidge.fit(X,Y)
+feature4 = np.empty(278, dtype=float)
+feature4 = np.genfromtxt('C:\Users\barth_000\Desktop\ML Project\Project1\p3_y.csv', delimiter="\n")
 
-# Cross validation
-# we compute cv times the score with different splits each time (partioning)
-score = sk.cross_validation.cross_val_score(modelRidge, datatofit, targetvariable, cv=5)
+features = np.concatenate((feature1, feature2, feature3, feature4), axis=0)
 
-# Prediction
-# toPredict = images to predict
-predicteddata= modelRidge.predict(toPredict).astype(int)
+age = np.empty(278, dtype=int)
+age = np.genfromtxt('C:\Users\barth_000\Desktop\ML Project\Project1\Target.csv', delimiter="\n")
+
+def linearregression(features, age, prediction=FALSE, topredict=np.empty(1, dtype=int)):
+    # Compute the linear regression with parameters:
+    # features
+    # age
+    # prediction = FALSE if we want to predict ages (by default = FALSE)
+    # topredict (features used for the prediction)
+
+    # More info at :
+    # http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html
+
+    # We set up the model
+    modelLinear = linear_model.LinearRegression()
+
+    # We compute the model
+    result = modelLinear.fit(features, age)
+
+    # Prediction
+    if prediction==TRUE:
+        predictionoutput = modelLinear.predict(topredict).astype(int)
+        return {'results': result, 'predicted ages': predictionoutput}
+    else:
+        return result
+
+def ridgeregression(alphas, features, age, prediction=FALSE, topredict=np.empty(1, dtype=int)):
+    # Compute the ridge regression with parameters:
+    # alphas (penalizing factors)
+    # features
+    # age
+    # prediction = FALSE if we want to predict ages (by default = FALSE)
+    # topredict (features used for the prediction)
+
+    # More info at :
+    # http://scikit-learn.org/stable/tutorial/basic/tutorial.html
+
+    # We set up the model
+    # cv : cross-validation generator (with none, Generalized Cross-Validation (efficient Leave-One-Out)
+    modelRidge = linear_model.RidgeCV(alphas, cv=None)
+
+    # We compute the model
+    result = modelRidge.fit(features, age)
+
+    """ Useless part as the function RidgeCV already computes the cross validation
+    # Cross validation
+    # We compute cv times the score with different splits each time (partioning)
+    scorecv = sk.cross_validation.cross_val_score(modelRidge, features, age, cv)"""
+
+    # Prediction
+    if prediction==TRUE:
+        predictionoutput = modelRidge.predict(topredict).astype(int)
+        return {'results': result, 'predicted ages': predictionoutput}
+    else:
+        return result
+
+def lassoregression(alphas, features, age, prediction=FALSE, topredict=np.empty(1, dtype=int)):
+    # Compute the Lasso regression with parameters:
+    # alphas (penalizing factors)
+    # features
+    # age
+    # prediction = FALSE if we want to predict ages (by default = FALSE)
+    # topredict (features used for the prediction)
+
+    # More info at :
+    # http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LassoCV.html
+
+    # We set up the model
+    # cv : cross-validation generator (with none, Generalized Cross-Validation (efficient Leave-One-Out)
+    modelLasso = linear_model.LassoCV(alphas, cv=None)
+
+    # We compute the model
+    result = modelLasso.fit(features, age)
+
+    """ Useless part as the function RidgeCV already computes the cross validation
+    # Cross validation
+    # We compute cv times the score with different splits each time (partioning)
+    scorecv = sk.cross_validation.cross_val_score(modelRidge, features, age, cv)"""
+
+    # Prediction
+    if prediction==TRUE:
+        predictionoutput = modelLasso.predict(topredict).astype(int)
+        return {'results': result, 'predicted ages': predictionoutput}
+    else:
+        return result
+
+linearregression(features, age)
+ridgeregression([0.1, 0.5, 1], features, age)
+lassoregression([0.1, 0.5, 1], features, age)
