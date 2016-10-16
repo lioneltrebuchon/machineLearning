@@ -33,10 +33,36 @@ Z = 10
 train1 = nib.load("/run/media/lionelt/04F6-B693/ML/data/set_train/train_1.nii")
 data = train1.get_data()
 
+# RIDGE REGRESSION
 
-reg = linear_model.Ridge (alpha = .5)
+import sklearn
 
-# linear_model.RidgeCV(alphas=[0.1])
-# clf.fit(X,Y)
-# score = cross_validation.cross_val_score()
-# output_data= clf.predict(X_t).astype(int)
+# More info at :
+# http://scikit-learn.org/stable/tutorial/basic/tutorial.html
+# http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_score.html#sklearn.model_selection.cross_val_score
+
+# We choose several value of alpha
+modelRidge = linear_model.RidgeCV(alphas=[0.1, 0.2, 0.3])
+
+# We compute the model
+modelRidge.fit(X,Y)
+
+# Cross validation
+# we compute cv times the score with different splits each time (partioning)
+score = cross_validation.cross_val_score(modelRidge, datatofit, targetvariable, cv=5)
+
+# Prediction
+# datatopredict = iamges to predict
+predicteddata= modelRidge.predict(datatopredict).astype(int)
+
+
+
+# LASSO REGRESSION
+
+import sklearn
+
+# We choose one value of alpha
+modelLasso = linear_model.Lasso(alpha=1.0)
+
+# We compute the model
+modelRidge.fit(X,Y)
