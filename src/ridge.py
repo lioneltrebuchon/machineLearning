@@ -24,27 +24,27 @@ import os, sys
 
 # Prepare the different features for the regression and then create the input array features
 feature1 = np.empty(278, dtype=float)
-feature1 = np.genfromtxt('C:\Users\barth_000\Desktop\ML Project\Project1\p2_x.csv', delimiter="\n")
+feature1 = np.genfromtxt('..results/p2_x.csv', delimiter="\n")
 
 feature2 = np.empty(278, dtype=float)
-feature2 = np.genfromtxt('C:\Users\barth_000\Desktop\ML Project\Project1\p3_x.csv', delimiter="\n")
+feature2 = np.genfromtxt('..results/p3_x.csv', delimiter="\n")
 
 feature3 = np.empty(278, dtype=float)
-feature3 = np.genfromtxt('C:\Users\barth_000\Desktop\ML Project\Project1\p2_y.csv', delimiter="\n")
+feature3 = np.genfromtxt('..results/p2_y.csv', delimiter="\n")
 
 feature4 = np.empty(278, dtype=float)
-feature4 = np.genfromtxt('C:\Users\barth_000\Desktop\ML Project\Project1\p3_y.csv', delimiter="\n")
+feature4 = np.genfromtxt('..results/p3_y.csv', delimiter="\n")
 
 features = np.concatenate((feature1, feature2, feature3, feature4), axis=0)
 
 age = np.empty(278, dtype=int)
-age = np.genfromtxt('C:\Users\barth_000\Desktop\ML Project\Project1\Target.csv', delimiter="\n")
+age = np.genfromtxt('..results/targets.csv', delimiter="\n")
 
-def linearregression(features, age, prediction=FALSE, topredict=np.empty(1, dtype=int)):
+def linearregression(features, age, prediction=False, topredict=np.empty(1, dtype=int)):
     # Compute the linear regression with parameters:
     # features
     # age
-    # prediction = FALSE if we want to predict ages (by default = FALSE)
+    # prediction = False if we want to predict ages (by default = False)
     # topredict (features used for the prediction)
 
     # More info at :
@@ -57,18 +57,18 @@ def linearregression(features, age, prediction=FALSE, topredict=np.empty(1, dtyp
     result = modelLinear.fit(features, age)
 
     # Prediction
-    if prediction==TRUE:
+    if prediction==True:
         predictionoutput = modelLinear.predict(topredict).astype(int)
         return {'results': result, 'predicted ages': predictionoutput}
     else:
         return result
 
-def ridgeregression(alphas, features, age, prediction=FALSE, topredict=np.empty(1, dtype=int)):
+def ridgeregression(alphas, features, age, prediction=False, topredict=np.empty(1, dtype=int)):
     # Compute the ridge regression with parameters:
     # alphas (penalizing factors)
     # features
     # age
-    # prediction = FALSE if we want to predict ages (by default = FALSE)
+    # prediction = False if we want to predict ages (by default = False)
     # topredict (features used for the prediction)
 
     # More info at :
@@ -87,18 +87,18 @@ def ridgeregression(alphas, features, age, prediction=FALSE, topredict=np.empty(
     scorecv = sk.cross_validation.cross_val_score(modelRidge, features, age, cv)"""
 
     # Prediction
-    if prediction==TRUE:
+    if prediction==True:
         predictionoutput = modelRidge.predict(topredict).astype(int)
         return {'results': result, 'predicted ages': predictionoutput}
     else:
         return result
 
-def lassoregression(alphas, features, age, prediction=FALSE, topredict=np.empty(1, dtype=int)):
+def lassoregression(alphas, features, age, prediction=False, topredict=np.empty(1, dtype=int)):
     # Compute the Lasso regression with parameters:
     # alphas (penalizing factors)
     # features
     # age
-    # prediction = FALSE if we want to predict ages (by default = FALSE)
+    # prediction = False if we want to predict ages (by default = False)
     # topredict (features used for the prediction)
 
     # More info at :
@@ -117,7 +117,7 @@ def lassoregression(alphas, features, age, prediction=FALSE, topredict=np.empty(
     scorecv = sk.cross_validation.cross_val_score(modelRidge, features, age, cv)"""
 
     # Prediction
-    if prediction==TRUE:
+    if prediction==True:
         predictionoutput = modelLasso.predict(topredict).astype(int)
         return {'results': result, 'predicted ages': predictionoutput}
     else:
