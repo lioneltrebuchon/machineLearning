@@ -12,16 +12,6 @@ import sklearn as sk
 from sklearn import linear_model
 from sklearn.linear_model import Lasso
 
-import os, sys
-
-""" Relative path """
-#train1 = nib.load("../data/set_train/train_1.nii")
-
-""" Path from usb key """
-#train1 = nib.load("/run/media/lionelt/04F6-B693/ML/data/set_train/train_1.nii")
-
-#data = train1.get_data()
-
 # Prepare the different features for the regression and then create the input array features
 feature1 = np.empty(278, dtype=float)
 feature1 = np.genfromtxt('../results/p2_x.csv', delimiter="\n")
@@ -35,8 +25,7 @@ feature3 = np.genfromtxt('../results/p2_y.csv', delimiter="\n")
 feature4 = np.empty(278, dtype=float)
 feature4 = np.genfromtxt('../results/p3_y.csv', delimiter="\n")
 
-features = np.concatenate((feature1, feature2, feature3, feature4), axis=0)
-
+features = np.transpose(np.array([feature1, feature2, feature3, feature4]))
 age = np.empty(278, dtype=int)
 age = np.genfromtxt('../data/targets.csv', delimiter="\n")
 
@@ -123,6 +112,6 @@ def lassoregression(alphas, features, age, prediction=False, topredict=np.empty(
     else:
         return result
 
-linearregression(features, age)
-ridgeregression([0.1, 0.5, 1], features, age)
-lassoregression([0.1, 0.5, 1], features, age)
+linearregression(features, age))
+#ridgeregression([0.1, 0.5, 1], features, age)
+#lassoregression([0.1, 0.5, 1], features, age)
