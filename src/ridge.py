@@ -29,17 +29,17 @@ features = np.transpose(np.array([feature1, feature2, feature3, feature4]))
 age = np.empty(278, dtype=int)
 age = np.genfromtxt('../data/targets.csv', delimiter="\n")
 
-topredictfeature1 = np.empty(1, dtype=float)
-topredictfeature1 = np.genfromtxt('', delimiter="\n")
+topredictfeature1 = np.empty(138, dtype=float)
+topredictfeature1 = np.genfromtxt('../results/test_p2_x.csv', delimiter="\n")
 
-topredictfeature2 = np.empty(1, dtype=float)
-topredictfeature2 = np.genfromtxt('', delimiter="\n")
+topredictfeature2 = np.empty(138, dtype=float)
+topredictfeature2 = np.genfromtxt('../results/test_p3_x.csv', delimiter="\n")
 
-topredictfeature3 = np.empty(1, dtype=float)
-topredictfeature3 = np.genfromtxt('', delimiter="\n")
+topredictfeature3 = np.empty(138, dtype=float)
+topredictfeature3 = np.genfromtxt('../results/test_p2_y.csv', delimiter="\n")
 
-topredictfeature4 = np.empty(1, dtype=float)
-topredictfeature4 = np.genfromtxt('', delimiter="\n")
+topredictfeature4 = np.empty(138, dtype=float)
+topredictfeature4 = np.genfromtxt('../results/test_p3_y.csv', delimiter="\n")
 
 topredictfeatures = np.transpose(np.array([topredictfeature1, topredictfeature1, topredictfeature1, topredictfeature1]))
 
@@ -98,7 +98,7 @@ def ridgeregression(alpha, features, age, prediction=False, topredict=np.empty(1
     # Prediction
     if prediction==True:
         predictionoutput = modelRidge.predict(topredict).astype(int)
-        print("Prediction: {0}".format(predictionoutput.C))
+        print("Prediction: {0}".format(predictionoutput))
         return {'Coefficient': modelRidge.coef_, 'Alpha': alpha, 'Score': scorefinal, 'Intercept': modelRidge.intercept_, 'Predicted ages': predictionoutput}
     else:
         return {'Coefficient': modelRidge.coef_, 'Alpha': alpha, 'Score': scorefinal, 'Intercept': modelRidge.intercept_}
@@ -134,10 +134,10 @@ def lassoregression(alpha, features, age, prediction=False, topredict=np.empty(1
     else:
         return {'Coefficient': modelLasso.coef_, 'Alpha': alpha, 'Score': scorefinal, 'Intercept': modelLasso.intercept_}
 
-linearregression(features, age)
-ridgeregression([0.1], features, age)
-ridgeregression([0.5], features, age)
-ridgeregression([1], features, age)
-lassoregression([0.1], features, age)
-lassoregression([0.5], features, age)
-lassoregression([1], features, age)
+# linearregression(features, age)
+ridgeregression([0.1], features, age, True, topredictfeatures)
+# ridgeregression([0.5], features, age)
+# ridgeregression([1], features, age)
+# lassoregression([0.1], features, age)
+# lassoregression([0.5], features, age)
+# lassoregression([1], features, age)
