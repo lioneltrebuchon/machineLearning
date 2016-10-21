@@ -67,7 +67,7 @@ def linearregression(features, age, prediction=False, topredict=np.empty(1, dtyp
     # Prediction
     if prediction==True:
         predictionoutput = modelLinear.predict(topredict).astype(int)
-        print("Prediction: {0}".format(predictionoutput.C))
+        print("Prediction: {0}".format(predictionoutput))
         return {'Coefficient': modelLinear.coef_, 'Score': scorefinal, 'Intercept': modelLinear.intercept_, 'Residue': modelLinear.residues_, 'Predicted ages': predictionoutput}
     else:
         return {'Coefficient': modelLinear.coef_, 'Score': scorefinal, 'Intercept': modelLinear.intercept_, 'Residue': modelLinear.residues_}
@@ -129,7 +129,7 @@ def lassoregression(alpha, features, age, prediction=False, topredict=np.empty(1
     # Prediction
     if prediction==True:
         predictionoutput = modelLasso.predict(topredict).astype(int)
-        print("Prediction: {0}".format(predictionoutput.C))
+        print("Prediction: {0}".format(predictionoutput))
         return {'Coefficient': modelLasso.coef_, 'Alpha': alpha, 'Score': scorefinal, 'Intercept': modelLasso.intercept_, 'Predicted ages': predictionoutput}
     else:
         return {'Coefficient': modelLasso.coef_, 'Alpha': alpha, 'Score': scorefinal, 'Intercept': modelLasso.intercept_}
