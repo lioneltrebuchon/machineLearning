@@ -67,10 +67,10 @@ def linearregression(features, age, prediction=False, topredict=np.empty(1, dtyp
     # Prediction
     if prediction==True:
         predictionoutput = modelLinear.predict(topredict).astype(int)
-        return {'results': result, 'predicted ages': predictionoutput}
         print("Prediction: {0}".format(predictionoutput.C))
+        return {'Coefficient': modelLinear.coef_, 'Score': scorefinal, 'Intercept': modelLinear.intercept_, 'Residue': modelLinear.residues_, 'Predicted ages': predictionoutput}
     else:
-        return result
+        return {'Coefficient': modelLinear.coef_, 'Score': scorefinal, 'Intercept': modelLinear.intercept_, 'Residue': modelLinear.residues_}
 
 def ridgeregression(alpha, features, age, prediction=False, topredict=np.empty(1, dtype=int)):
     # Compute the ridge regression with parameters:
@@ -98,10 +98,10 @@ def ridgeregression(alpha, features, age, prediction=False, topredict=np.empty(1
     # Prediction
     if prediction==True:
         predictionoutput = modelRidge.predict(topredict).astype(int)
-        return {'results': result, 'predicted ages': predictionoutput}
         print("Prediction: {0}".format(predictionoutput.C))
+        return {'Coefficient': modelRidge.coef_, 'Alpha': alpha, 'Score': scorefinal, 'Intercept': modelRidge.intercept_, 'Predicted ages': predictionoutput}
     else:
-        return result
+        return {'Coefficient': modelRidge.coef_, 'Alpha': alpha, 'Score': scorefinal, 'Intercept': modelRidge.intercept_}
 
 def lassoregression(alpha, features, age, prediction=False, topredict=np.empty(1, dtype=int)):
     # Compute the Lasso regression with parameters:
@@ -129,10 +129,10 @@ def lassoregression(alpha, features, age, prediction=False, topredict=np.empty(1
     # Prediction
     if prediction==True:
         predictionoutput = modelLasso.predict(topredict).astype(int)
-        return {'results': result, 'predicted ages': predictionoutput}
         print("Prediction: {0}".format(predictionoutput.C))
+        return {'Coefficient': modelLasso.coef_, 'Alpha': alpha, 'Score': scorefinal, 'Intercept': modelLasso.intercept_, 'Predicted ages': predictionoutput}
     else:
-        return result
+        return {'Coefficient': modelLasso.coef_, 'Alpha': alpha, 'Score': scorefinal, 'Intercept': modelLasso.intercept_}
 
 linearregression(features, age)
 ridgeregression([0.1], features, age)
@@ -141,33 +141,3 @@ ridgeregression([1], features, age)
 lassoregression([0.1], features, age)
 lassoregression([0.5], features, age)
 lassoregression([1], features, age)
-
-print(modelLasso.coef_)
-
-# peaksFile = open('../results/regressionresults.csv','w')
-# peaksFile.write("Coefficient:")
-# peaksFile.write("\n")
-# peaksFile.close()
-#
-# import xlwt
-# book = xlwt.Workbook(encoding="utf-8")
-# sheet1 = book.add_sheet("Sheet 1")
-#
-# sheet1.write(2, 1, "Coefficient 1")
-# sheet1.write(3, 1, "Coefficient 2")
-# sheet1.write(4, 1, "Coefficient 3")
-# sheet1.write(5, 1, "Coefficient 4")
-# sheet1.write(6, 1, "Alpha")
-# sheet1.write(7, 1, "Score")
-# sheet1.write(8, 1, "Intercept")
-# sheet1.write(9, 1, "Residue")
-#
-# sheet1.write(1, 2, "Linear")
-# sheet1.write(1, 3, "Ridge")
-# sheet1.write(1, 4, "Ridge")
-# sheet1.write(1, 5, "Ridge")
-# sheet1.write(1, 6, "Lasso")
-# sheet1.write(1, 7, "Lasso")
-# sheet1.write(1, 8, "Lasso")
-#
-# book.save("trial.xls")
