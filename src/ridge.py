@@ -12,6 +12,11 @@ import sklearn as sk
 from sklearn import linear_model
 from sklearn.linear_model import Lasso
 
+<<<<<<< HEAD
+import os, sys
+
+=======
+>>>>>>> 020f68aea82f370db028bc18acdc8720b14358ce
 # Prepare the different features for the regression and then create the input array features
 feature1 = np.empty(278, dtype=float)
 feature1 = np.genfromtxt('../results/p2_x.csv', delimiter="\n")
