@@ -59,6 +59,25 @@ def ridgeRegression(alpha, features, age, prediction=False, toPredict=np.empty(1
     else:
         return {'Coefficient': modelRidge.coef_, 'Alpha': alpha, 'Score': scoreFinal, 'Intercept': modelRidge.intercept_}
 
+# # Compute the reg for several alpha and determin the prediction for the best alpha
+# alphaStart = 0.1
+# alphaENd = 1
+# alphaStep = 0.1
+#
+# #for i in np.linspace(alphaStart, alphaENd, 100):
+# for i in range(alphaStart, alphaENd, alphaStep):
+#     result = ridgeRegression([i], features, age)
+#     RidgeAlpha.append(i)
+#     RidgeScore.append(result['Score'])
+#
+# plt.plot(RidgeAlpha, RidgeScore)
+# plt.xlabel('Alpha')
+# plt.ylabel('Score')
+# plt.show()
+#
+# maxScore = amax(RidgeScore, axis=0)
+# maxAlpha = RidgeAlpha[RidgeScore.argmax(axis=0)]
+
 predictedAges = ridgeRegression([0.1], features, age, True, toPredictFeatures)['PredictedAges']
 
 for id in range(TEST):
