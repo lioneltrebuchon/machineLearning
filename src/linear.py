@@ -52,7 +52,7 @@ def linearRegression(features, age, prediction=False, toPredict=np.empty(1, dtyp
 
     # Prediction
     if prediction==True:
-        predictionOutput = modelLinear.predict(toPredict)
+        predictionOutput = modelLinear.predict(toPredict).astype(int)
         print("Prediction: {0}".format(predictionOutput))
         return {'Coefficient': modelLinear.coef_, 'Score': finalScore, 'Intercept': modelLinear.intercept_, 'Residue': modelLinear.residues_, 'PredictedAges': predictionOutput}
     else:
