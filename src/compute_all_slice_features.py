@@ -55,9 +55,9 @@ for i in range(T):
                 if intensity > MAX:
                     MAX = intensity
 
-print(MAX)
 for a in ['x','y','z']:
     for c in range(Ncuts):
         for r in range(Nrange):
             acr = a+format(str(c), '02x')+format(str(r), '02x')
+            featureFiles[acr].write(MAX)
             featureFiles[acr].close()
