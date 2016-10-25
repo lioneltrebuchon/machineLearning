@@ -59,7 +59,7 @@ def ridgeRegression(alpha, features, age, prediction=False, toPredict=np.empty(1
     else:
         return {'Coefficient': modelRidge.coef_, 'Alpha': alpha, 'Score': scoreFinal, 'Intercept': modelRidge.intercept_}
 
-predictedAges=ridgeRegression(features, age, True, toPredictFeatures)['PredictedAges']
+predictedAges = ridgeRegression([0.1], features, age, True, toPredictFeatures)['PredictedAges']
 
 for id in range(TEST):
     fresult.write(str(id)+","+str(predictedAges[id])+"\n")
