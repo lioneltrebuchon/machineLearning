@@ -14,14 +14,6 @@ from sklearn.linear_model import Lasso
 
 import os, sys
 
-""" Relative path """
-#train1 = nib.load("../data/set_train/train_1.nii")
-
-""" Path from usb key """
-#train1 = nib.load("/run/media/lionelt/04F6-B693/ML/data/set_train/train_1.nii")
-
-#data = train1.get_data()
-
 # Prepare the different features for the regression and then create the input array features
 feature1 = np.empty(278, dtype=float)
 feature1 = np.genfromtxt('..results/p2_x.csv', delimiter="\n")

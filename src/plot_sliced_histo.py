@@ -35,7 +35,9 @@ data = [None]*T
 ages = np.genfromtxt('../data/targets.csv', delimiter="\n")
 
 #for axis in [1,2,3]
-sizeCut = int(round(X/nCuts))
+sizeCutX = int(round(X/nCuts))
+sizeCutY = int(round(Y/nCuts))
+sizeCutZ = int(round(Z/nCuts))
 for i in xrange(T):
     print("plotting histogram of train"+str(i+1)+"...")
     #relative path
@@ -46,8 +48,8 @@ for i in xrange(T):
     for cut in xrange(nCuts):
         # store all the non zero values in a 1D list
         intList=[]
-        print("plotting histogram of slice"+str(cut)+"...") 
-        for x in range((cut-1)*sizeCut,cut*sizeCut):
+        print("plotting x-histogram of slice"+str(cut)+"...") 
+        for x in range((cut-1)*sizeCutX,cut*sizeCutX):
             for y in range(Y):
                 for z in range(Z):
                     if data[i][x,y,z]!=0:
@@ -59,6 +61,53 @@ for i in xrange(T):
         plt.title("Histogram of Train "+str(i+1)+"(age "+str(int(ages[i]))+")."+"Cut nr."+str(cut))
         plt.xlabel("Values of the 3D brain")
         plt.ylabel("Frequencies")
-        histo.savefig("../plots/plot_histo_age"+str(int(ages[i]))+"_train"+str(i+1)+"_cut"+str(cut)+".png")
+        histo.savefig("../plots/histoXcut_age"+str(int(ages[i]))+"_train"+str(i+1)+"_cut"+str(cut)+".png")
         plt.clf() #close figure
         del intList[:]
+
+    
+    for cut in xrange(nCuts):
+        # store all the non zero values in a 1D list
+        intList=[]
+        print("plotting y-histogram of slice"+str(cut)+"...") 
+        for y in range((cut-1)*sizeCutY,cut*sizeCutY):
+            for x in range(X):
+                for z in range(Z):
+                    if data[i][x,y,z]!=0:
+                        intList.append(int(data[i][x,y,z]))
+        # plot and save figure
+        histo = plt.figure(cut)
+        plt.hist(intList, 200)
+        plt.axis([0, 2800, 0, 6000])
+        plt.title("Histogram of Train "+str(i+1)+"(age "+str(int(ages[i]))+")."+"Cut nr."+str(cut))
+        plt.xlabel("Values of the 3D brain")
+        plt.ylabel("Frequencies")
+        histo.savefig("../plots/histoYcut_age"+str(int(ages[i]))+"_train"+str(i+1)+"_cut"+str(cut)+".png")
+        plt.clf() #close figure
+        del intList[:]
+
+    for cut in xrange(nCuts):
+        # store all the non zero values in a 1D list
+        intList=[]
+        print("plotting y-histogram of slice"+str(cut)+"...") 
+        for z in range((cut-1)*sizeCutZ,cut*sizeCutZ):
+            for x in range(X):
+                for y in range(y):
+                    if data[i][x,y,z]!=0:
+                        intList.append(int(data[i][x,y,z]))
+        # plot and save figure
+        histo = plt.figure(cut)
+        plt.hist(intList, 200)
+        plt.axis([0, 2800, 0, 6000])
+        plt.title("Histogram of Train "+str(i+1)+"(age "+str(int(ages[i]))+")."+"Cut nr."+str(cut))
+        plt.xlabel("Values of the 3D brain")
+        plt.ylabel("Frequencies")
+        histo.savefig("../plots/histoZcut_age"+str(int(ages[i]))+"_train"+str(i+1)+"_cut"+str(cut)+".png")
+        plt.clf() #close figure
+        del intList[:]
+
+for i in range(len(peakIndexes)):
+        peaks.append([values[1][peakIndexes[i]],values[0][peakIndexes[i]]])
+        print("Peak "+str(i)+": ")
+        print(peaks[i])
+        peaksFile.write(", "+str(peaks[i]))

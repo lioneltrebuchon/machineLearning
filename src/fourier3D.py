@@ -32,7 +32,7 @@ ages = np.genfromtxt('../data/targets.csv', delimiter="\n")
 peaksFile = open('../results/2peaks.csv','w')
 colormap = mpl.colors.LinearSegmentedColormap.from_list('my_colormap',['black','white'],256)
 
-t = np.arange(start=1,stop=T,step=10) 
+t = np.arange(start=1,stop=T,step=1) 
 
 frequencies_mask_xy = np.ones([X,Y])
 for i in xrange(20):
