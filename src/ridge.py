@@ -12,25 +12,41 @@ import sklearn as sk
 from sklearn import linear_model
 from sklearn.linear_model import Lasso
 
+<<<<<<< HEAD
 import os, sys
 
+=======
+>>>>>>> 020f68aea82f370db028bc18acdc8720b14358ce
 # Prepare the different features for the regression and then create the input array features
 feature1 = np.empty(278, dtype=float)
-feature1 = np.genfromtxt('..results/p2_x.csv', delimiter="\n")
+feature1 = np.genfromtxt('../results/p2_x.csv', delimiter="\n")
 
 feature2 = np.empty(278, dtype=float)
-feature2 = np.genfromtxt('..results/p3_x.csv', delimiter="\n")
+feature2 = np.genfromtxt('../results/p3_x.csv', delimiter="\n")
 
 feature3 = np.empty(278, dtype=float)
-feature3 = np.genfromtxt('..results/p2_y.csv', delimiter="\n")
+feature3 = np.genfromtxt('../results/p2_y.csv', delimiter="\n")
 
 feature4 = np.empty(278, dtype=float)
-feature4 = np.genfromtxt('..results/p3_y.csv', delimiter="\n")
+feature4 = np.genfromtxt('../results/p3_y.csv', delimiter="\n")
 
-features = np.concatenate((feature1, feature2, feature3, feature4), axis=0)
-
+features = np.transpose(np.array([feature1, feature2, feature3, feature4]))
 age = np.empty(278, dtype=int)
-age = np.genfromtxt('..results/targets.csv', delimiter="\n")
+age = np.genfromtxt('../data/targets.csv', delimiter="\n")
+
+topredictfeature1 = np.empty(138, dtype=float)
+topredictfeature1 = np.genfromtxt('../results/test_p2_x.csv', delimiter="\n")
+
+topredictfeature2 = np.empty(138, dtype=float)
+topredictfeature2 = np.genfromtxt('../results/test_p3_x.csv', delimiter="\n")
+
+topredictfeature3 = np.empty(138, dtype=float)
+topredictfeature3 = np.genfromtxt('../results/test_p2_y.csv', delimiter="\n")
+
+topredictfeature4 = np.empty(138, dtype=float)
+topredictfeature4 = np.genfromtxt('../results/test_p3_y.csv', delimiter="\n")
+
+topredictfeatures = np.transpose(np.array([topredictfeature1, topredictfeature1, topredictfeature1, topredictfeature1]))
 
 def linearregression(features, age, prediction=False, topredict=np.empty(1, dtype=int)):
     # Compute the linear regression with parameters:
@@ -43,21 +59,27 @@ def linearregression(features, age, prediction=False, topredict=np.empty(1, dtyp
     # http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html
 
     # We set up the model
-    modelLinear = linear_model.LinearRegression()
+    modelLinear = linear_model.LinearRegression(normalize=True)
 
     # We compute the model
     result = modelLinear.fit(features, age)
 
+    # We compute the score
+    scorefinal = modelLinear.score(features, age)
+
+    print("Coefficient: {0} Score: {1} Intercept: {2} Residue: {3}".format(modelLinear.coef_, scorefinal, modelLinear.intercept_, modelLinear.residues_, ))
+
     # Prediction
     if prediction==True:
         predictionoutput = modelLinear.predict(topredict).astype(int)
-        return {'results': result, 'predicted ages': predictionoutput}
+        print("Prediction: {0}".format(predictionoutput))
+        return {'Coefficient': modelLinear.coef_, 'Score': scorefinal, 'Intercept': modelLinear.intercept_, 'Residue': modelLinear.residues_, 'Predicted ages': predictionoutput}
     else:
-        return result
+        return {'Coefficient': modelLinear.coef_, 'Score': scorefinal, 'Intercept': modelLinear.intercept_, 'Residue': modelLinear.residues_}
 
-def ridgeregression(alphas, features, age, prediction=False, topredict=np.empty(1, dtype=int)):
+def ridgeregression(alpha, features, age, prediction=False, topredict=np.empty(1, dtype=int)):
     # Compute the ridge regression with parameters:
-    # alphas (penalizing factors)
+    # alpha (penalizing factor, unique)
     # features
     # age
     # prediction = False if we want to predict ages (by default = False)
@@ -68,26 +90,30 @@ def ridgeregression(alphas, features, age, prediction=False, topredict=np.empty(
 
     # We set up the model
     # cv : cross-validation generator (with none, Generalized Cross-Validation (efficient Leave-One-Out)
-    modelRidge = linear_model.RidgeCV(alphas, cv=None)
+    modelRidge = linear_model.RidgeCV(alpha, normalize=True, cv=None)
 
     # We compute the model
     result = modelRidge.fit(features, age)
 
-    """ Useless part as the function RidgeCV already computes the cross validation
-    # Cross validation
-    # We compute cv times the score with different splits each time (partioning)
-    scorecv = sk.cross_validation.cross_val_score(modelRidge, features, age, cv)"""
+    # We compute the score
+    scorefinal = modelRidge.score(features, age)
+
+    print("Coefficient: {0} Alpha: {1} Score: {2} Intercept: {3}".format(modelRidge.coef_, alpha, scorefinal, modelRidge.intercept_))
 
     # Prediction
     if prediction==True:
         predictionoutput = modelRidge.predict(topredict).astype(int)
-        return {'results': result, 'predicted ages': predictionoutput}
+        print("Prediction: {0}".format(predictionoutput))
+        return modelRidge.coef_, alpha, scorefinal, modelRidge.intercept_, predictionoutput
+        #return {'Coefficient': modelRidge.coef_, 'Alpha': alpha, 'Score': scorefinal, 'Intercept': modelRidge.intercept_, 'Predicted ages': predictionoutput}
     else:
-        return result
+        #return alpha, scorefinal, modelRidge.intercept_
+        return modelRidge.coef_, alpha, scorefinal, modelRidge.intercept_
+        #return {'Coefficient': modelRidge.coef_, 'Alpha': alpha, 'Score': scorefinal, 'Intercept': modelRidge.intercept_}
 
-def lassoregression(alphas, features, age, prediction=False, topredict=np.empty(1, dtype=int)):
+def lassoregression(alpha, features, age, prediction=False, topredict=np.empty(1, dtype=int)):
     # Compute the Lasso regression with parameters:
-    # alphas (penalizing factors)
+    # alpha (penalizing factor, unique)
     # features
     # age
     # prediction = False if we want to predict ages (by default = False)
@@ -98,23 +124,43 @@ def lassoregression(alphas, features, age, prediction=False, topredict=np.empty(
 
     # We set up the model
     # cv : cross-validation generator (with none, Generalized Cross-Validation (efficient Leave-One-Out)
-    modelLasso = linear_model.LassoCV(alphas, cv=None)
+    modelLasso = linear_model.LassoCV(alpha, cv=None, normalize=True)
 
     # We compute the model
     result = modelLasso.fit(features, age)
 
-    """ Useless part as the function RidgeCV already computes the cross validation
-    # Cross validation
-    # We compute cv times the score with different splits each time (partioning)
-    scorecv = sk.cross_validation.cross_val_score(modelRidge, features, age, cv)"""
+    # We compute the score
+    scorefinal = modelLasso.score(features, age)
+
+    print("Coefficient: {0} Alpha: {1} Score: {2} Intercept: {3}".format(modelLasso.coef_ , alpha, scorefinal, modelLasso.intercept_))
 
     # Prediction
     if prediction==True:
         predictionoutput = modelLasso.predict(topredict).astype(int)
-        return {'results': result, 'predicted ages': predictionoutput}
+        print("Prediction: {0}".format(predictionoutput))
+        return {'Coefficient': modelLasso.coef_, 'Alpha': alpha, 'Score': scorefinal, 'Intercept': modelLasso.intercept_, 'Predicted ages': predictionoutput}
     else:
-        return result
+        return {'Coefficient': modelLasso.coef_, 'Alpha': alpha, 'Score': scorefinal, 'Intercept': modelLasso.intercept_}
 
-linearregression(features, age)
-ridgeregression([0.1, 0.5, 1], features, age)
-lassoregression([0.1, 0.5, 1], features, age)
+# linearregression(features, age, True, topredictfeatures)
+# ridgeregression([0.002], features, age, True, topredictfeatures)
+# ridgeregression([0.5], features, age, True, topredictfeatures)
+# ridgeregression([1], features, age, True, topredictfeatures)
+# lassoregression([0.1], features, age, True, topredictfeatures)
+# lassoregression([0.5], features, age, True, topredictfeatures)
+# lassoregression([1], features, age, True, topredictfeatures)
+
+# Ridgealpha = []
+# Ridgescorefinal = []
+# Ridgeintercept = []
+#
+# for i in np.linspace(0.01, 0.2, 100):
+#     a, b, c = ridgeregression([i], features, age)
+#     Ridgealpha.append(a)
+#     Ridgescorefinal.append(b)
+#     Ridgeintercept.append(c)
+#
+# plt.plot(Ridgealpha, Ridgescorefinal)
+# plt.show()
+# plt.xlabel('alpha')
+# plt.ylabel('final score')
