@@ -99,11 +99,12 @@ def ridgeregression(alpha, features, age, prediction=False, topredict=np.empty(1
     if prediction==True:
         predictionoutput = modelRidge.predict(topredict).astype(int)
         print("Prediction: {0}".format(predictionoutput))
-        #return modelRidge.coef_, alpha, scorefinal, modelRidge.intercept_, predictionoutput
-        return {'Coefficient': modelRidge.coef_, 'Alpha': alpha, 'Score': scorefinal, 'Intercept': modelRidge.intercept_, 'Predicted ages': predictionoutput}
+        return modelRidge.coef_, alpha, scorefinal, modelRidge.intercept_, predictionoutput
+        #return {'Coefficient': modelRidge.coef_, 'Alpha': alpha, 'Score': scorefinal, 'Intercept': modelRidge.intercept_, 'Predicted ages': predictionoutput}
     else:
-        #return modelRidge.coef_, alpha, scorefinal, modelRidge.intercept_
-        return {'Coefficient': modelRidge.coef_, 'Alpha': alpha, 'Score': scorefinal, 'Intercept': modelRidge.intercept_}
+        #return alpha, scorefinal, modelRidge.intercept_
+        return modelRidge.coef_, alpha, scorefinal, modelRidge.intercept_
+        #return {'Coefficient': modelRidge.coef_, 'Alpha': alpha, 'Score': scorefinal, 'Intercept': modelRidge.intercept_}
 
 def lassoregression(alpha, features, age, prediction=False, topredict=np.empty(1, dtype=int)):
     # Compute the Lasso regression with parameters:
@@ -137,10 +138,24 @@ def lassoregression(alpha, features, age, prediction=False, topredict=np.empty(1
         return {'Coefficient': modelLasso.coef_, 'Alpha': alpha, 'Score': scorefinal, 'Intercept': modelLasso.intercept_}
 
 # linearregression(features, age, True, topredictfeatures)
-ridgeregression([0.1], features, age, True, topredictfeatures)
-# ridgeregression([0.001], features, age, True, topredictfeatures)
+# ridgeregression([0.002], features, age, True, topredictfeatures)
 # ridgeregression([0.5], features, age, True, topredictfeatures)
 # ridgeregression([1], features, age, True, topredictfeatures)
 # lassoregression([0.1], features, age, True, topredictfeatures)
 # lassoregression([0.5], features, age, True, topredictfeatures)
 # lassoregression([1], features, age, True, topredictfeatures)
+
+# Ridgealpha = []
+# Ridgescorefinal = []
+# Ridgeintercept = []
+#
+# for i in np.linspace(0.01, 0.2, 100):
+#     a, b, c = ridgeregression([i], features, age)
+#     Ridgealpha.append(a)
+#     Ridgescorefinal.append(b)
+#     Ridgeintercept.append(c)
+#
+# plt.plot(Ridgealpha, Ridgescorefinal)
+# plt.show()
+# plt.xlabel('alpha')
+# plt.ylabel('final score')
