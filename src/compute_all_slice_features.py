@@ -1,32 +1,29 @@
 ###########################################################################################################################
 
-# Python script which computes all the features (vol, p1_x, p1_y, p2_x, p2_y, p3_x p3_y) and save them in separated files
+# Python script which computes all the slice features and save them in 1 file
 
 ###########################################################################################################################
 
 import numpy as np
 import nibabel as nib
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-
-from detect_peaks import detect_peaks
-
-import os, sys
 
 #'''
 X = 176
 Y = 208
 Z = 176
 T = 278
+Ncuts = 16
+Nranges = 16
 ''' #for testing
 X = 50
 Y = 50
 Z = 50
 T = 2
+Ncuts = 5
+Nranges = 5
 #'''
 
-Ncuts = 16
-Nranges = 16
+
 
 maxIntensity = 2400
 sizeRange = maxIntensity / Nranges
@@ -39,8 +36,6 @@ axes = ['x','y','z']
 
 train = [None]*T
 data = [None]*T
-
-ages = np.genfromtxt('../data/targets.csv', delimiter="\n")
 
 ''' Separate files
 featureFiles = {}
@@ -60,7 +55,7 @@ for i in xrange(T):
     train[i] = nib.load("../data/set_train/train_"+str(i+1)+".nii")
     data[i] = train[i].get_data()
     
-    feature = np.zeros((3,Ncuts,Nranges))    
+    feature = np.zeros((3,Ncuts,Nranges),np.uint)    
 
     for x in xrange(X):
         cx = x/sizeCutX
@@ -86,9 +81,12 @@ for i in xrange(T):
     for a in xrange(3):
         for c in xrange(Ncuts):
             for r in xrange(Nranges):
-                featuresFile.write(str(feature[a,c,r])+',')
+                if a+c+r != 0:
+                    featuresFile.write(',')
+                featuresFile.write(str(feature[a,c,r]))
+    
     featuresFile.write('\n')
-
+    
 ''' Separate files
 for a in xrange(3):
     for c in xrange(Ncuts):
