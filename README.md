@@ -25,6 +25,8 @@ python -m pip install --user matplotlib
 
 python -m pip install --user scipy
 
+pip install --user --install-option="--prefix=" -U scikit-learn
+
 
 
 ## Main TODO 
