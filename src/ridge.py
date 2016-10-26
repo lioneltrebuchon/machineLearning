@@ -15,22 +15,12 @@ import sklearn as sk
 from sklearn import linear_model
 from sklearn.linear_model import Lasso
 
-# Prepare the different features for the regression and then create the input array features
-feature1 = np.genfromtxt('../results/p2_x.csv', delimiter="\n")
-feature2 = np.genfromtxt('../results/p3_x.csv', delimiter="\n")
-feature3 = np.genfromtxt('../results/p2_y.csv', delimiter="\n")
-feature4 = np.genfromtxt('../results/p3_y.csv', delimiter="\n")
-
-features = np.transpose(np.array([feature1, feature2, feature3, feature4]))
-
+# Input (features and age) of the regression
+features = np.transpose(np.genfromtxt('../results/sliceFeatures.csv', delimiter="\n"))
 age = np.genfromtxt('../data/targets.csv', delimiter="\n")
 
-toPredictFeature1 = np.genfromtxt('../results/test_p2_x.csv', delimiter="\n")
-toPredictFeature2 = np.genfromtxt('../results/test_p3_x.csv', delimiter="\n")
-toPredictFeature3 = np.genfromtxt('../results/test_p2_y.csv', delimiter="\n")
-toPredictFeature4 = np.genfromtxt('../results/test_p3_y.csv', delimiter="\n")
-
-toPredictFeatures = np.transpose(np.array([toPredictFeature1, toPredictFeature2, toPredictFeature3, toPredictFeature4]))
+# Features for the prediction
+toPredictFeatures = np.transpose(np.genfromtxt('../results/test_sliceFeatures.csv', delimiter="\n"))
 
 def ridgeRegression(alphas, features, age, prediction=False, toPredict=np.empty(1, dtype=int)):
     # More info at :
