@@ -12,12 +12,20 @@ bsub -n 2 -R "rusage[mem=8000]" python -singleCompThread -r compute_all_peaks.py
 5. Do we need pandas ?
 
 Install on linux systems (and brutus/euler servers)
+
 module load python/2.7.6
+
 python get-pip.py --user
+
 python -m pip install --user nibabel
+
 python -m pip install --user numpy
+
 python -m pip install --user matplotlib
+
 python -m pip install --user scipy
+
+pip install --user --install-option="--prefix=" -U scikit-learn
 
 
 
