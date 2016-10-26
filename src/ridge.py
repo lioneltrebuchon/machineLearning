@@ -58,14 +58,20 @@ alphaStep = 0.01
 
 # compute the regression for several alphas
 alphas = [0.1]
-coefficient, alpha, score, intercept = ridgeRegression(alphas, features, age)
+toPredictFeatures = features
 
+#coefficient, alpha, score, intercept, predictedAges 
+results = ridgeRegression(alphas, features, age,True,toPredict=toPredictFeatures)
+alpha=results['Alpha']
+predictedAges=results['PredictedAges']
 
-'''
+print(alpha)
+print(predictedAges)
+
 # write in a csv file
-fresult = open('../results/resultRidge.csv','w')
-fresult.write("ID,Prediction,alpha:,"+alpha+"\n")
-for id in range(TEST):
-    fresult.write(str(id)+","+str(predictedAges[id])+"\n")
-fresult.close()
-'''
+result = open('../results/resultRidge.csv','w')
+result.write("ID,Prediction,alpha:,"+str(alpha)+"\n")
+for id in range(TRAIN):
+    result.write(str(id+1)+","+str(predictedAges[id])+"\n")
+result.close()
+
