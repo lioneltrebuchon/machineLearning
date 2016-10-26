@@ -32,16 +32,13 @@ toPredictFeature4 = np.genfromtxt('../results/test_p3_y.csv', delimiter="\n")
 
 toPredictFeatures = np.transpose(np.array([toPredictFeature1, toPredictFeature2, toPredictFeature3, toPredictFeature4]))
 
-fresult = open('../results/resultLasso.csv','w')
-fresult.write("ID,Prediction\n")
-
-def lassoRegression(alpha, features, age, prediction=False, toPredict=np.empty(1, dtype=int)):
+def lassoRegression(alphas, features, age, prediction=False, toPredict=np.empty(1, dtype=int)):
     # More info at :
     # http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LassoCV.html
 
     # We set up the model
     # cv : cross-validation generator (with none, Generalized Cross-Validation (efficient Leave-One-Out)
-    modelLasso = linear_model.LassoCV(alpha, normalize=True, cv=None)
+    modelLasso = linear_model.LassoCV(alphas, normalize=True, cv=None)
 
     # We compute the model
     result = modelLasso.fit(features, age)
@@ -49,18 +46,27 @@ def lassoRegression(alpha, features, age, prediction=False, toPredict=np.empty(1
     # We compute the score
     scoreFinal = modelLasso.score(features, age)
 
-    print("Coefficient: {0} Alpha: {1} Score: {2} Intercept: {3}".format(modelLasso.coef_, alpha, scoreFinal, modelLasso.intercept_))
+    print("Coefficient: {0} Alpha: {1} Score: {2} Intercept: {3}".format(modelLasso.coef_, modelLasso.alpha_, scoreFinal, modelLasso.intercept_))
 
     # Prediction
     if prediction==True:
         predictionOutput = modelLasso.predict(toPredict).astype(int)
         print("Prediction: {0}".format(predictionOutput))
-        return {'Coefficient': modelLasso.coef_, 'Alpha': alpha, 'Score': scoreFinal, 'Intercept': modelLasso.intercept_, 'PredictedAges': predictionOutput}
+        return {'Coefficient': modelLasso.coef_, 'Alpha': modelLasso.alpha_, 'Score': scoreFinal, 'Intercept': modelLasso.intercept_, 'PredictedAges': predictionOutput}
     else:
-        return {'Coefficient': modelLasso.coef_, 'Alpha': alpha, 'Score': scoreFinal, 'Intercept': modelLasso.intercept_}
+        return {'Coefficient': modelLasso.coef_, 'Alpha': modelLasso.alpha_, 'Score': scoreFinal, 'Intercept': modelLasso.intercept_}
 
-predictedAges = lassoRegression([0.1], features, age, True, toPredictFeatures)['PredictedAges']
+alphaStart = 0.01
+alphaEnd = 1
+alphaStep = 0.01
 
+# compute the regression for several alphas
+alphas = np.linspace(alphaStart, alphaEnd, (alphaEnd-alphaStart)/alphaStep)
+coefficient, alpha, score, intercept, predictedAges = lassoRegression(alphas, features, age, True, toPredictFeatures)
+
+# write in a csv file
+fresult = open('../results/resultLasso.csv','w')
+fresult.write("ID,Prediction,alpha:,"+alpha+"\n")
 for id in range(TEST):
     fresult.write(str(id)+","+str(predictedAges[id])+"\n")
 fresult.close()
