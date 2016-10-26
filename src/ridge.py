@@ -23,10 +23,10 @@ age = np.genfromtxt('../data/targets.csv', delimiter="\n")
 #print(features.shape)
 #print(age.shape)
 
-'''
+
 # Features for the prediction
-toPredictFeatures = np.transpose(np.genfromtxt('../results/test_sliceFeatures.csv', delimiter=","))
-'''
+toPredictFeatures = np.genfromtxt('../results/finalSliceFeaturesTest.csv', delimiter=",")
+
 
 def ridgeRegression(alphas, features, age, prediction=False, toPredict=np.empty(1, dtype=int)):
     # More info at :
@@ -58,7 +58,6 @@ alphaStep = 0.01
 
 # compute the regression for several alphas
 alphas = [0.1]
-toPredictFeatures = features
 
 #coefficient, alpha, score, intercept, predictedAges 
 results = ridgeRegression(alphas, features, age,True,toPredict=toPredictFeatures)
@@ -71,7 +70,7 @@ print(predictedAges)
 # write in a csv file
 result = open('../results/resultRidge.csv','w')
 result.write("ID,Prediction,alpha:,"+str(alpha)+"\n")
-for id in range(TRAIN):
+for id in range(TEST):
     result.write(str(id+1)+","+str(predictedAges[id])+"\n")
 result.close()
 
