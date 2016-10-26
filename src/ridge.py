@@ -16,11 +16,17 @@ from sklearn import linear_model
 from sklearn.linear_model import Lasso
 
 # Input (features and age) of the regression
-features = np.transpose(np.genfromtxt('../results/sliceFeatures.csv', delimiter="\n"))
+features = np.genfromtxt('../results/sliceFeatures.csv', delimiter=",")
+#print(features)
 age = np.genfromtxt('../data/targets.csv', delimiter="\n")
+#print(age)
+#print(features.shape)
+#print(age.shape)
 
+'''
 # Features for the prediction
-toPredictFeatures = np.transpose(np.genfromtxt('../results/test_sliceFeatures.csv', delimiter="\n"))
+toPredictFeatures = np.transpose(np.genfromtxt('../results/test_sliceFeatures.csv', delimiter=","))
+'''
 
 def ridgeRegression(alphas, features, age, prediction=False, toPredict=np.empty(1, dtype=int)):
     # More info at :
@@ -51,12 +57,15 @@ alphaEnd = 10
 alphaStep = 0.01
 
 # compute the regression for several alphas
-alphas = np.linspace(alphaStart, alphaEnd, (alphaEnd-alphaStart)/alphaStep)
-coefficient, alpha, score, intercept, predictedAges = ridgeRegression(alphas, features, age, True, toPredictFeatures)
+alphas = [0.1]
+coefficient, alpha, score, intercept = ridgeRegression(alphas, features, age)
 
+
+'''
 # write in a csv file
 fresult = open('../results/resultRidge.csv','w')
 fresult.write("ID,Prediction,alpha:,"+alpha+"\n")
 for id in range(TEST):
     fresult.write(str(id)+","+str(predictedAges[id])+"\n")
 fresult.close()
+'''
