@@ -47,12 +47,12 @@ for a in xrange(3):
             featureFiles[acr] = open('../results/sliceFeatures/'+acr+'.csv','w')
 '''
 
-featuresFile = open('../results/sliceRange32.csv','w')
+featuresFile = open('../results/sliceRange32_134to138.csv','w')
 
-for i in xrange(T):
+for i in xrange(133,T):
     print("Computing features of train"+str(i+1)+"...")
     
-    train[i] = nib.load("/local/set_test/test_"+str(i+1)+".nii")
+    train[i] = nib.load("../data/set_test/test_"+str(i+1)+".nii")
     data[i] = train[i].get_data()
     
     feature = np.zeros((3,Ncuts,Nranges),np.uint)    

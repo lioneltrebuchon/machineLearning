@@ -7,5 +7,3 @@
 *.pyc
 *.zip
 *.tar.gz
-slice*.csv
-compute_all_slice*.py
