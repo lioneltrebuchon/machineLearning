@@ -3,6 +3,13 @@
 ## Euler
 bsub -n 2 -R "rusage[mem=8000]" python -singleCompThread -r compute_all_peaks.py 
 
+## Submissions
+1. mistake
+2. resultRidge: ridge on range16, no peaks   78.48571
+3. resultRidge: ridge on range32, no peaks
+4. resultRidge: ridge on range48, no peaks
+5. resultRidge: ridge on range64, no peaks
+
 ## Dependencies
 
 1. nibabel
