@@ -5,10 +5,10 @@ bsub -n 2 -R "rusage[mem=8000]" python -singleCompThread -r compute_all_peaks.py
 
 ## Submissions
 1. mistake
-2. resultRidge: ridge on range16, no peaks   78.48571
-3. resultRidge: ridge on range32, no peaks
-4. resultRidge: ridge on range48, no peaks
-5. resultRidge: ridge on range64, no peaks
+2. resultRidge: ridge on range16, no peaks, alpha = 0.1   78.48571
+3. resultRidge: ridge on range32, no peaks, alpha = 0.1   82.21429
+4. resultRidge: ridge on range48, no peaks, alpha = 0.1   67.45714
+5. resultRidge: ridge on range64, no peaks, alpha = 0.1   68.44286
 
 ## Dependencies
 
