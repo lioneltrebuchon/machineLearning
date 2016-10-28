@@ -61,6 +61,7 @@ alphas = [0.001,0.01]
 # write in a csv file
 result = open('../results/resultRidge_range32_CVBarthe.csv','w')
 result.write("alpha"+","+"error"+"\n")
+print("computing for alphas: "+alphas)
 
 for i in alphas:
     #coefficient, alpha, score, intercept, predictedAges
@@ -75,8 +76,11 @@ for i in alphas:
     error2 = error
     if error < 0:
         error2 = -error
+    print(str(i))
+    print(str(error2))
     result.write(str(i)+","+str(error2)+"\n")
     #print(error)
     #print(error2)
 
 result.close()
+print("end of computation")
