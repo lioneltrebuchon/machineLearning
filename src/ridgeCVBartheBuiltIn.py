@@ -36,6 +36,7 @@ def ridgeRegression(alphas, features, age, prediction=False, toPredict=np.empty(
 
     # We compute the score
     scoreCV = np.sum(cross_val_score(modelRidge, features, age, cv=10))/10
+    scoreFinal = 0
     #modelRidge.score(features, age)
 
     #print("Coefficient: {0} Alpha: {1} Score: {2} Intercept: {3} CV: {4}".format(modelRidge.coef_, modelRidge.alpha_, scoreFinal, modelRidge.intercept_, scoreCV))
