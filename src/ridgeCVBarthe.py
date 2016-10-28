@@ -63,15 +63,20 @@ result = open('../results/resultRidge_range32_CVBarthe.csv','w')
 result.write("alpha"+","+"error"+"\n")
 
 for i in alphas:
-    #coefficient, alpha, score, intercept, predictedAges 
-    print(i)
-    print([i])
+    #coefficient, alpha, score, intercept, predictedAges
+    error = 0
+    error2 = 0
     results = ridgeRegression([i], features, age, True, toPredict=toPredictFeatures)
     #alpha = results['Alpha']
     predictedAges = results['PredictedAges']
     #print(alpha)
     #print(predictedAges)
-    error = ageCV - predictedAges
-    result.write(str(i)+","+str(error)+"\n")
+    error = np.sum(ageCV) - np.sum(predictedAges)
+    error2 = error
+    if error < 0:
+        error2 = -error
+    result.write(str(i)+","+str(error2)+"\n")
+    print(error)
+    print(error2)
 
 result.close()
