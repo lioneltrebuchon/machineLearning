@@ -7,3 +7,4 @@
 *.pyc
 *.zip
 *.tar.gz
+.DS_Store
