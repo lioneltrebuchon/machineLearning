@@ -75,6 +75,6 @@ for i in alphas:
     result.write(str(i)+","+str(listCV[j])+"\n")
     j = j + 1
 result.close()
-print(np.amax(listCV))
-print(alphas[np.argmax(listCV)])
+print(np.amin(listCV))
+print(alphas[np.argmin(listCV)])
 print("End of computation")
