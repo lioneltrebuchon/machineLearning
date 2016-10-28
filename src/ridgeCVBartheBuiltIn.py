@@ -62,15 +62,19 @@ alphas = [0.01, 0.1, 0.5, 1, 2, 3, 4, 5, 10, 50, 100, 1000]
 
 result = open('../results/resultRidge_range32_CVBarthe.csv','w')
 result.write("alpha"+","+"average error"+"\n")
+listCV = np.empty([len(alphas)], dtype=float)
+j = 0
 
 #coefficient, alpha, score, intercept, scoreCV, predictedAges
 print("Start Ridge regression with alphas"+str(alphas))
 for i in alphas:
     results = ridgeRegression([i], features, age)
-    CV = results['scoreCV']
+    listCV[j] = results['scoreCV']
     #predictedAges = results['PredictedAges']
     # write in a csv file
-    result.write(str(i)+","+str(CV)+"\n")
-
+    result.write(str(i)+","+str(listCV[j])+"\n")
+    j = j + 1
 result.close()
+print(np.amax(listCV))
+print(np.argmax(listCV))
 print("End of computation")
