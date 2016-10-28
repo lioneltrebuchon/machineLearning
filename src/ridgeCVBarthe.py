@@ -21,10 +21,11 @@ age = np.genfromtxt('../data/targetsTrainCVBarthe.csv', delimiter="\n")
 
 # Features for the prediction
 toPredictFeatures = np.genfromtxt('../results/sliceTrainFeatures32ValidationCVBarthe.csv', delimiter=",")
+ageCV = np.genfromtxt('../data/targetsValidationCVBarthe.csv', delimiter="\n")
 
-print(features.shape)
-print(age.shape)
-print(toPredictFeatures.shape)
+#print(features.shape)
+#print(age.shape)
+#print(toPredictFeatures.shape)
 
 def ridgeRegression(alphas, features, age, prediction=False, toPredict=np.empty(1, dtype=int)):
     # More info at :
@@ -55,20 +56,20 @@ def ridgeRegression(alphas, features, age, prediction=False, toPredict=np.empty(
 # alphaStep = 0.01
 
 # compute the regression for several alphas
-alphas = [0.001,0.01,0.1,0.5,1,5,10,50,100]
-
-#coefficient, alpha, score, intercept, predictedAges 
-results = ridgeRegression(alphas, features, age, True, toPredict=toPredictFeatures)
-alpha = results['Alpha']
-predictedAges = results['PredictedAges']
-
-print(alpha)
-print(predictedAges)
+alphas = [0.001,0.01]
 
 # write in a csv file
 result = open('../results/resultRidge_range32_CVBarthe.csv','w')
-result.write("ID,Prediction,alpha:,"+str(alpha)+"\n")
-for id in range(TEST):
-    result.write(str(id+1)+","+str(predictedAges[id])+"\n")
-result.close()
+result.write("alpha"+","+"error"+"\n")
 
+for i in alphas:
+    #coefficient, alpha, score, intercept, predictedAges 
+    results = ridgeRegression(i, features, age, True, toPredict=toPredictFeatures)
+    #alpha = results['Alpha']
+    predictedAges = results['PredictedAges']
+    #print(alpha)
+    #print(predictedAges)
+    error = ageCV - predictedAges
+    result.write(str(i)+","+str(error)+"\n")
+
+result.close()
