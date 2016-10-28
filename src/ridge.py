@@ -16,16 +16,16 @@ from sklearn import linear_model
 from sklearn.linear_model import Lasso
 
 # Input (features and age) of the regression
-features = np.genfromtxt('../results/sliceFeatures.csv', delimiter=",")
+features = np.genfromtxt('../results/sliceTrainFeatures32.csv', delimiter=",")
 #print(features)
 age = np.genfromtxt('../data/targets.csv', delimiter="\n")
-#print(age)
-#print(features.shape)
-#print(age.shape)
+print(age)
+print(features.shape)
+print(age.shape)
 
 
 # Features for the prediction
-toPredictFeatures = np.genfromtxt('../results/finalSliceFeaturesTest.csv', delimiter=",")
+toPredictFeatures = np.genfromtxt('../results/sliceTestFeatures32.csv', delimiter=",")
 
 
 def ridgeRegression(alphas, features, age, prediction=False, toPredict=np.empty(1, dtype=int)):
@@ -57,7 +57,7 @@ alphaEnd = 10
 alphaStep = 0.01
 
 # compute the regression for several alphas
-alphas = [0.1]
+alphas = [0.001,0.01,0.1,0.5,1,5,10,50,100]
 
 #coefficient, alpha, score, intercept, predictedAges 
 results = ridgeRegression(alphas, features, age,True,toPredict=toPredictFeatures)
@@ -68,7 +68,7 @@ print(alpha)
 print(predictedAges)
 
 # write in a csv file
-result = open('../results/resultRidge.csv','w')
+result = open('../results/resultRidge3_range32.csv','w')
 result.write("ID,Prediction,alpha:,"+str(alpha)+"\n")
 for id in range(TEST):
     result.write(str(id+1)+","+str(predictedAges[id])+"\n")
