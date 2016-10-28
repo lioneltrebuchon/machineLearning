@@ -16,7 +16,7 @@ from sklearn import linear_model
 from sklearn.linear_model import Lasso
 
 # Input (features and age) of the regression
-features = np.genfromtxt('../results/sliceTrainFeatures32.csv', delimiter=",")
+features = np.genfromtxt('../results/sliceTrainFeatures32CVBartheBuiltIn.csv', delimiter=",")
 age = np.genfromtxt('../data/targets.csv', delimiter="\n")
 
 # Features for the prediction
