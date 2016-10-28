@@ -41,12 +41,12 @@ def ridgeRegression(alphas, features, age, prediction=False, toPredict=np.empty(
     # We compute the score
     scoreFinal = modelRidge.score(features, age)
 
-    print("Coefficient: {0} Alpha: {1} Score: {2} Intercept: {3}".format(modelRidge.coef_, modelRidge.alpha_, scoreFinal, modelRidge.intercept_))
+    #print("Coefficient: {0} Alpha: {1} Score: {2} Intercept: {3}".format(modelRidge.coef_, modelRidge.alpha_, scoreFinal, modelRidge.intercept_))
 
     # Prediction
     if prediction==True:
         predictionOutput = modelRidge.predict(toPredict).astype(int)
-        print("Prediction: {0}".format(predictionOutput))
+        #print("Prediction: {0}".format(predictionOutput))
         return {'Coefficient': modelRidge.coef_, 'Alpha': modelRidge.alpha_, 'Score': scoreFinal, 'Intercept': modelRidge.intercept_, 'PredictedAges': predictionOutput}
     else:
         return {'Coefficient': modelRidge.coef_, 'Alpha': modelRidge.alpha_, 'Score': scoreFinal, 'Intercept': modelRidge.intercept_}
@@ -76,7 +76,7 @@ for i in alphas:
     if error < 0:
         error2 = -error
     result.write(str(i)+","+str(error2)+"\n")
-    print(error)
-    print(error2)
+    #print(error)
+    #print(error2)
 
 result.close()
