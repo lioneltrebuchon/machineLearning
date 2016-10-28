@@ -50,7 +50,8 @@ def ridgeRegression(alphas, features, age, prediction=False, toPredict=np.empty(
         return {'Coefficient': modelRidge.coef_, 'Alpha': modelRidge.alpha_, 'Score': scoreFinal, 'Intercept': modelRidge.intercept_, 'scoreCV': scoreCV}
 
 # compute the regression for several alphas
-alphas = [0.0000000001, 0.000000001, 0.00000001, 0.0000001, 0.000001, 0.00001, 0.0001, 0.001, 0.01, 0.1, 0.5, 1, 2, 3, 4, 5, 10, 50, 100, 1000, 10000, 100000]
+alphas = [0.000001, 0.00001, 0.0001, 0.001, 0.01, 0.1, 0.5, 1, 2, 3, 4, 5, 10, 50, 100, 1000, 10000, 10000]
+#alphas = [0.0000000001, 0.000000001, 0.00000001, 0.0000001, 0.000001, 0.00001, 0.0001, 0.001, 0.01, 0.1, 0.5, 1, 2, 3, 4, 5, 10, 50, 100, 1000, 10000, 100000]
 
 # alphaStart = 0.01
 # alphaEnd = 10
