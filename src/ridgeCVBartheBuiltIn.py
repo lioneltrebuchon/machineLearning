@@ -35,8 +35,7 @@ def ridgeRegression(alphas, features, age, prediction=False, toPredict=np.empty(
     result = modelRidge.fit(features, age)
 
     # We compute the score
-    scoreCV = cross_val_score(modelRidge, features, age, cv=10)
-    scoreFinal = 0
+    scoreCV = np.sum(cross_val_score(modelRidge, features, age, cv=10))/10
     #modelRidge.score(features, age)
 
     #print("Coefficient: {0} Alpha: {1} Score: {2} Intercept: {3} CV: {4}".format(modelRidge.coef_, modelRidge.alpha_, scoreFinal, modelRidge.intercept_, scoreCV))
@@ -59,22 +58,17 @@ alphas = [0.001,0.01,0.1,0.5,1,5,10,50,100]
 
 # results = ridgeRegression(alphas, features, age)
 
+result = open('../results/resultRidge_range32_CVBarthe.csv','w')
+result.write("alpha"+","+"average error"+"\n")
+
 #coefficient, alpha, score, intercept, scoreCV, predictedAges
 print("Start Ridge regression with alphas"+str(alphas))
-results = ridgeRegression(alphas, features, age)
-alpha = results['Alpha']
-CV = results['scoreCV']
-#predictedAges = results['PredictedAges']
-print(alpha)
-print(CV)
-print("End of computation")
+for i in alphas:
+    results = ridgeRegression([i], features, age)
+    CV = results['scoreCV']
+    #predictedAges = results['PredictedAges']
+    # write in a csv file
+    result.write(str(i)+","+str(CV)+"\n")
 
-'''
-# write in a csv file
-result = open('../results/resultRidge3_range32.csv','w')
-result.write("ID,Prediction,alpha:,"+str(alpha)+"\n")
-for id in range(TEST):
-    #print(id)
-    result.write(str(id+1)+","+str(predictedAges[id])+"\n")
 result.close()
-'''
+print("End of computation")
