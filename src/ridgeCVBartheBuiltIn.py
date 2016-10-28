@@ -12,7 +12,7 @@ import nibabel as nib
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import sklearn as sk
-from sklearn import linear_model
+from sklearn import linear_model, datasets
 from sklearn.linear_model import Lasso
 from sklearn.model_selection import cross_val_score
 
