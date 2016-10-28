@@ -64,7 +64,9 @@ result.write("alpha"+","+"error"+"\n")
 
 for i in alphas:
     #coefficient, alpha, score, intercept, predictedAges 
-    results = ridgeRegression(i, features, age, True, toPredict=toPredictFeatures)
+    print(i)
+    print([i])
+    results = ridgeRegression([i], features, age, True, toPredict=toPredictFeatures)
     #alpha = results['Alpha']
     predictedAges = results['PredictedAges']
     #print(alpha)
