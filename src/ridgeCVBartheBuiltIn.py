@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 import sklearn as sk
 from sklearn import linear_model
 from sklearn.linear_model import Lasso
+from sklearn.model_selection import cross_val_score
 
 # Input (features and age) of the regression
 features = np.genfromtxt('../results/sliceTrainFeatures32.csv', delimiter=",")
