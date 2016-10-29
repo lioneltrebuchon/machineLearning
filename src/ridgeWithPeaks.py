@@ -55,7 +55,7 @@ def ridgeRegression(alphas, features, age, prediction=False, toPredict=np.empty(
 
     # Prediction
     if prediction==True:
-        predictionOutput = modelRidge.predict(toPredict).astype(int)
+        predictionOutput = np.round(modelRidge.predict(toPredict))
         return {'Coefficient': modelRidge.coef_, 'Alpha': modelRidge.alpha_, 'Score': scoreFinal, 'Intercept': modelRidge.intercept_, 'PredictedAges': predictionOutput}
     else:
         return {'Coefficient': modelRidge.coef_, 'Alpha': modelRidge.alpha_, 'Score': scoreFinal, 'Intercept': modelRidge.intercept_}
@@ -70,7 +70,7 @@ print(features.shape)
 print(toPredictFeatures.shape)
 '''
 # compute the regression for several alphas
-alphas = [1]
+alphas = [1.7]
 #alphas = np.linspace(0.00000000001,0.0000001,10001)
 
 #results = ridgeRegression(alphas, features, age)
@@ -86,8 +86,8 @@ print(predictedAges)
 
 
 # write in a csv file
-result = open('../results/resultRidge3_range48withPeaks.csv','w')
-result.write("ID,Prediction,alpha:,"+str(alpha)+"\n")
+result = open('../results/resultRidge_48withPeaks_alpha'+str(alpha)+'.csv','w')
+result.write("ID,Prediction"+"\n")
 for id in range(TEST):
     #print(id)
     result.write(str(id+1)+","+str(predictedAges[id])+"\n")
