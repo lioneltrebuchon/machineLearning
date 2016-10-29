@@ -22,11 +22,11 @@ from sklearn.linear_model import Lasso
 # features5 = np.transpose(np.array([feature1, feature2, feature3, feature4]))
 
 # Input (features and age) of the regression
-features = np.genfromtxt('../results/sliceTrainFeatures32.csv', delimiter=",")
+features = np.genfromtxt('../results/sliceTrainFeatures48.csv', delimiter=",")
 age = np.genfromtxt('../data/targets.csv', delimiter="\n")
 
 # Features for the prediction
-toPredictFeatures = np.genfromtxt('../results/sliceTestFeatures32.csv', delimiter=",")
+toPredictFeatures = np.genfromtxt('../results/sliceTestFeatures48.csv', delimiter=",")
 
 def ridgeRegression(alphas, features, age, prediction=False, toPredict=np.empty(1, dtype=int)):
     # More info at :
@@ -62,7 +62,7 @@ alpha = results['Alpha']
 predictedAges = results['PredictedAges']
 
 # write in a csv file
-result = open('../results/resultRidge3_range32.csv','w')
+result = open('../results/resultRidge3_range48.csv','w')
 result.write("ID,Prediction,alpha:,"+str(alpha)+"\n")
 for id in range(TEST):
     result.write(str(id+1)+","+str(predictedAges[id])+"\n")
