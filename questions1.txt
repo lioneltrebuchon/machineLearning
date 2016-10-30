@@ -1,0 +1,9 @@
+1) Programmation: We have written a ridge regression in excel, and don't find the same values as in the python script.
+
+2) Is it worth it taking MANY features, so having a QUANTITATIVE approach instead of a QUALITATIVE approach?
+
+3) Programmation: code not sending alpha
+
+4) Are the regressions to be trusted to weight features by themselves?
+
+5) Report?
