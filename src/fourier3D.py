@@ -1,6 +1,8 @@
 #####################################################################################################
 
 # Python script which computes a real Fourier transform 
+# The idea was to find a way to compute the "roughness" of the white matter
+# which we visually thought to increase with the age, but it hasn't been conclusive.
 
 #####################################################################################################
 
