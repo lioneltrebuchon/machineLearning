@@ -1,6 +1,6 @@
 ###########################################################################################################################
 
-# Python script which computes all the features (vol, p1_x, p1_y, p2_x, p2_y, p3_x p3_y) and save them in separated files
+# Python script which computes all the peaks features (p1_x, p1_y, p2_x, p2_y, p3_x p3_y) for the train set and save them in separated files
 
 ###########################################################################################################################
 
@@ -11,39 +11,35 @@ import matplotlib.pyplot as plt
 
 from detect_peaks import detect_peaks
 
-import os, sys
-
-#'''
+#''' (remove/add # to switch)
 X = 176
 Y = 208
 Z = 176
-T = 278
-''' #for testing
+N_TRAIN = 278
+''' #for testing with smaller values
 X = 50
 Y = 50
 Z = 50
-T = 3
-'''
+N_TRAIN = 2
+#'''
 
-train = [None]*T
-data = [None]*T
+train = [None]*N_TRAIN
+data = [None]*N_TRAIN
 
-ages = np.genfromtxt('../data/targets.csv', delimiter="\n")
-fvol = open('../results/vol.csv','w')
-fp1_x = open('../results/p1_x.csv','w')
-fp1_y = open('../results/p1_y.csv','w')
-fp2_x = open('../results/p2_x.csv','w')
-fp2_y = open('../results/p2_y.csv','w')
-fp3_x = open('../results/p3_x.csv','w')
-fp3_y = open('../results/p3_y.csv','w')
+fp1_x = open('features/train_p1_x.csv','w')
+fp1_y = open('features/train_p1_y.csv','w')
+fp2_x = open('features/train_p2_x.csv','w')
+fp2_y = open('features/train_p2_y.csv','w')
+fp3_x = open('features/train_p3_x.csv','w')
+fp3_y = open('features/train_p3_y.csv','w')
 
-for i in range(T):
+for i in range(N_TRAIN):
     print("Computing features of train"+str(i+1)+"...")
     
-    train[i] = nib.load("../data/set_train/train_"+str(i+1)+".nii")
+    train[i] = nib.load("data/set_train/train_"+str(i+1)+".nii")
     data[i] = train[i].get_data()
     
-    # store all the non zero values in a 1D list and compute the volume
+    # store all the non zero values in a 1D list
     intList=[]
     vol = 0
     for x in range(X):
@@ -52,15 +48,12 @@ for i in range(T):
                 if data[i][x,y,z]!=0:
                     intList.append(int(data[i][x,y,z]))
                     vol+=1
-                    
-    # save the volume                
-    fvol.write(str(vol)+"\n")
     
     # compute the peaks and save them
     values=plt.hist(intList, 200)
     peakIndexes=detect_peaks(values[0], mph = 1000, mpd = 30, show=False)
     peaks=[]
-    if len(peakIndexes)==2:
+    if len(peakIndexes)==2: #the first peak doesn't exist each time
         fp1_x.write("0\n")
         fp1_y.write("0\n")
         fp2_x.write(str(values[1][peakIndexes[0]])+"\n")
@@ -83,7 +76,6 @@ for i in range(T):
         fp3_x.write("0\n")
         fp3_y.write("0\n")
         
-fvol.close()
 fp1_x.close()
 fp1_y.close()
 fp2_x.close()

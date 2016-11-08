@@ -22,12 +22,30 @@ from sklearn.linear_model import Lasso
 # features5 = np.transpose(np.array([feature1, feature2, feature3, feature4]))
 
 # Input (features and age) of the regression
-features = np.genfromtxt('../results/sliceTrainFeatures48.csv', delimiter=",")
+sliceFeatures48 = np.genfromtxt('../results/sliceTrainFeatures48.csv', delimiter=",")
+sliceFeatures32 = np.genfromtxt('../results/sliceTrainFeatures32.csv', delimiter=",")
+sliceFeatures64 = np.genfromtxt('../results/sliceTrainFeatures64.csv', delimiter=",")
+p2x = np.genfromtxt('../results/p2_x.csv', delimiter=",")
+p2y = np.genfromtxt('../results/p2_y.csv', delimiter=",")
+p3x = np.genfromtxt('../results/p3_x.csv', delimiter=",")
+p3y = np.genfromtxt('../results/p3_y.csv', delimiter=",")
+
+features = np.concatenate([sliceFeatures48, sliceFeatures32, sliceFeatures64 ,np.reshape(p2x,[-1,1]),np.reshape(p2y,[-1,1]),np.reshape(p3x,[-1,1]),np.reshape(p3y,[-1,1])],1)
+
+#print(features)
+#features = features[0:-1,0:features.shape[0]]
 age = np.genfromtxt('../data/targets.csv', delimiter="\n")
 
 # Features for the prediction
-toPredictFeatures = np.genfromtxt('../results/sliceTestFeatures48.csv', delimiter=",")
+sliceFeatures48 = np.genfromtxt('../results/sliceTestFeatures48.csv', delimiter=",")
+sliceFeatures32 = np.genfromtxt('../results/sliceTestFeatures32.csv', delimiter=",")
+sliceFeatures64 = np.genfromtxt('../results/sliceTestFeatures64.csv', delimiter=",")
+p2x = np.genfromtxt('../results/test_p2_x.csv', delimiter=",")
+p2y = np.genfromtxt('../results/test_p2_y.csv', delimiter=",")
+p3x = np.genfromtxt('../results/test_p3_x.csv', delimiter=",")
+p3y = np.genfromtxt('../results/test_p3_y.csv', delimiter=",")
 
+toPredictFeatures = np.concatenate([sliceFeatures48, sliceFeatures32, sliceFeatures64 ,np.reshape(p2x,[-1,1]),np.reshape(p2y,[-1,1]),np.reshape(p3x,[-1,1]),np.reshape(p3y,[-1,1])],1)
 
 def lassoRegression(alphas, features, age, prediction=False, toPredict=np.empty(1, dtype=int)):
     # More info at :
@@ -47,13 +65,14 @@ def lassoRegression(alphas, features, age, prediction=False, toPredict=np.empty(
 
     # Prediction
     if prediction==True:
-        predictionOutput = modelLasso.predict(toPredict).astype(int)
+        predictionOutput = np.round(modelLasso.predict(toPredict))
         return {'Coefficient': modelLasso.coef_, 'Alpha': modelLasso.alpha_, 'Score': scoreFinal, 'Intercept': modelLasso.intercept_, 'PredictedAges': predictionOutput}
     else:
         return {'Coefficient': modelLasso.coef_, 'Alpha': modelLasso.alpha_, 'Score': scoreFinal, 'Intercept': modelLasso.intercept_}
 
 # compute the regression for several alphas
-alphas = [0.001,0.01,0.1,0.5,1,5,10,50,100]
+alphas = [0.1]
+#alphas = [0.001,0.01,0.1,0.5,1,5,10,50,100]
 #alphas = np.linspace(0.00000000001,0.0000001,10001)
 
 #coefficient, alpha, score, intercept, predictedAges
@@ -63,8 +82,8 @@ alpha = results['Alpha']
 predictedAges = results['PredictedAges']
 
 # write in a csv file
-result = open('../results/resultLasso_range48.csv','w')
-result.write("ID,Prediction,alpha:,"+str(alpha)+"\n")
+result = open('../results/resultLasso_allRangesWithPeaks_alpha'+str(alpha)+'.csv','w')
+result.write("ID,Prediction\n")
 for id in range(TEST):
     result.write(str(id+1)+","+str(predictedAges[id])+"\n")
 result.close()
