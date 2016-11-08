@@ -24,8 +24,8 @@ X = 10
 Y = 10
 Z = 10
 T = 2
-'''
-LABELS = ["diseased","healthy"]
+#'''
+STATUS = ["diseased","healthy"]
 train = [None]*T
 data = [None]*T
 
@@ -79,7 +79,7 @@ for i in range(T):
 		            cmap=colormap,
 		            origin='lower')
 	#plt.colorbar(img_xy,cmap=colormap)
-	plt.title("Train"+str(i+1)+" projected on XY ("+STATUS[labels[i]]+")")
+	plt.title("Train"+str(i+1)+" projected on XY ("+STATUS[int(labels[i])]+")")
 	plt.xlabel("y")
 	plt.ylabel("x")
 
@@ -88,7 +88,7 @@ for i in range(T):
 		            cmap=colormap,
 		            origin='lower')
 	#plt.colorbar(img_xz,cmap=colormap)
-	plt.title("Train"+str(i+1)+" projected on XZ ("+STATUS[labels[i]]+")")
+	plt.title("Train"+str(i+1)+" projected on XZ ("+STATUS[int(labels[i])]+")")
 	plt.xlabel("z")
 	plt.ylabel("x")
 
@@ -97,9 +97,9 @@ for i in range(T):
 		            cmap=colormap,
 		            origin='lower')
 	#plt.colorbar(img_zy,cmap=colormap)
-	plt.title("Train"+str(i+1)+" projected on ZY ("+STATUS[labels[i]]+")")
+	plt.title("Train"+str(i+1)+" projected on ZY ("+STATUS[int(labels[i])]+")")
 	plt.xlabel("y")
 	plt.ylabel("z")
 
-	fig.savefig("../plots/plot_"+STATUS[labels[i]]+"_train"+str(i+1)+".png")
+	fig.savefig("../plots/plot_"+STATUS[int(labels[i])]+"_train"+str(i+1)+".png")
 	plt.clf() #close figure
