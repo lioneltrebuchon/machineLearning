@@ -49,8 +49,10 @@ for i in range(T):
 
     # plot and save figure
     histo = plt.figure(0)
-    plt.hist(intList, 400)
-    plt.axis([0, 2800, 0, 60000])
+    binwidth = 10
+    bins = range(0, 2000 + binwidth, binwidth)
+    plt.hist(intList, bins=bins)
+    plt.axis([0, 2000, 0, 40000])
     plt.title("Histogram of Train"+str(i+1)+" ("+STATUS[int(labels[i])]+")")
     plt.xlabel("Values of the 3D brain")
     plt.ylabel("Frequencies")
