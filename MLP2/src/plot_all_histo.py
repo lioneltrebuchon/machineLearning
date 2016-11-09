@@ -7,6 +7,7 @@
 import numpy as np
 import nibabel as nib
 import matplotlib as mpl
+mpl.use('Agg')
 import matplotlib.pyplot as plt
 
 #import sklearn as sk
@@ -50,7 +51,7 @@ for i in range(T):
     histo = plt.figure(0)
     plt.hist(intList, 50)
     plt.axis([0, 2800, 0, 60000])
-    plt.title("Histogram of Train"+str(i+1)+" ("++STATUS[int(labels[i])]+")")
+    plt.title("Histogram of Train"+str(i+1)+" ("+STATUS[int(labels[i])]+")")
     plt.xlabel("Values of the 3D brain")
     plt.ylabel("Frequencies")
     histo.savefig("../plots/plot_histo_"+STATUS[int(labels[i])]+"_train"+str(i+1)+".png")
