@@ -40,7 +40,7 @@ for i in range(T):
     data[i] = train[i].get_data()
 
     # store all the non zero values in a 1D list
-    intList=[]
+    intList=[2500]
     for x in range(X):
         for y in range(Y):
             for z in range(Z):
@@ -49,7 +49,7 @@ for i in range(T):
 
     # plot and save figure
     histo = plt.figure(0)
-    plt.hist(intList, 50)
+    plt.hist(intList, 400)
     plt.axis([0, 2800, 0, 60000])
     plt.title("Histogram of Train"+str(i+1)+" ("+STATUS[int(labels[i])]+")")
     plt.xlabel("Values of the 3D brain")
