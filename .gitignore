@@ -2,6 +2,7 @@
 *.png
 *.jpg
 *.avi
+*.mp4
 *.nii
 *~
 *.pyc

@@ -32,7 +32,7 @@ data = [None]*T
 
 labels = np.genfromtxt('../data/targets.csv', delimiter="\n")
 
-for i in range(T):
+for i in range(250, T):
     print("plotting histogram of train"+str(i+1)+"...")
     #relative path
     train[i] = nib.load("../data/set_train/train_"+str(i+1)+".nii")
