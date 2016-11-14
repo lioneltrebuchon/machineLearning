@@ -23,7 +23,7 @@ from sklearn import svm
 # Input (features and targets) of the regression
 features = np.genfromtxt('../features/train_p2_x.csv', delimiter="\n").reshape(-1, 1)
 
-targets = np.genfromtxt('../data/targets.csv', delimiter="\n")
+targets = np.genfromtxt('../data/targets.csv', delimiter="\n").astype(int)
 
 # Features for the prediction
 #toPredictFeatures = np.genfromtxt('../features/test_p2_x.csv', delimiter=",")
@@ -39,10 +39,21 @@ def svmclassification(features, targets, C=1, kernel='rbf', gamma='auto', decisi
     # gamma: kernel coefficient (float) for 'rbf', 'poly' and 'sigmoid'.If gamma is 'auto' then 1 / n_features will be used instead.
     # decision_function_shape returns a one-vs-rest (ovr) or the one-vs-one (ovo) decision 		# function (by default with None)
 
+    print(C)
+    print(kernel)
+    print(decision_function_shape)
+
     # We set up the model
     modelSVM = svm.SVC(C, kernel, decision_function_shape)
 
     # We compute the model
+    print(features)
+    print(features.shape)
+    print(targets)
+    print(targets.shape)
+    print(features.dtype)
+    print(targets.dtype) 
+   
     modelSVM.fit(features, targets)
 
     # Compute the distance of the samples X to the separating hyperplane.
@@ -77,13 +88,18 @@ c = 1
 #coefficient, alpha, score, intercept, predictedtargetss
 print("Start SVM classification with C = "+str(c))
 prediction = False
-results = svmclassification(features, targets, c, gamma='auto', prediction=False)
-PredictedClass = results['PredictedClass']
+#print(features)
+#print(features.shape)
+#print(targets)
+#print(targets.shape)
+svmclassification(features, targets, c, gamma='auto', prediction=False)
 
 # write in a csv file
 if prediction==True:
+    PredictedClass = results['PredictedClass']
     result = open('../results/prediction.csv','w')
     result.write("ID,Prediction,C:,"+str(C)+"\n")
     for id in range(TEST):
         result.write(str(id+1)+","+str(PredictedClass[id])+"\n")
     result.close()
+
