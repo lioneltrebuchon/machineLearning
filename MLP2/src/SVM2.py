@@ -44,7 +44,7 @@ def svmclassification(features, targets, C=1, kernel='rbf', gamma='auto', decisi
     print(decision_function_shape)
 
     # We set up the model
-    modelSVM = svm.SVC(C, kernel, decision_function_shape)
+    modelSVM = svm.SVC(C, kernel, decision_function_shape=decision_function_shape)
 
     # We compute the model
     print(features)
@@ -52,8 +52,8 @@ def svmclassification(features, targets, C=1, kernel='rbf', gamma='auto', decisi
     print(targets)
     print(targets.shape)
     print(features.dtype)
-    print(targets.dtype) 
-   
+    print(targets.dtype)
+
     modelSVM.fit(features, targets)
 
     # Compute the distance of the samples X to the separating hyperplane.
@@ -102,4 +102,3 @@ if prediction==True:
     for id in range(TEST):
         result.write(str(id+1)+","+str(PredictedClass[id])+"\n")
     result.close()
-
