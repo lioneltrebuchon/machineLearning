@@ -76,7 +76,7 @@ c = 1.0
 
 print("Start SVM classification with C = "+str(c))
 prediction = False
-svmclassification(features, targets, c, kernel='rbf', gamma='auto', decision_function_shape=None, prediction=False, toPredict=np.empty(1, dtype=int))
+results = svmclassification(features, targets, c, kernel='rbf', gamma='auto', decision_function_shape=None, prediction=False, toPredict=np.empty(1, dtype=int))
 
 # write in a csv file
 if prediction==True:
