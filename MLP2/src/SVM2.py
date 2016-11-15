@@ -14,21 +14,22 @@ import matplotlib.pyplot as plt
 import sklearn as sk
 from sklearn import svm
 
-# feature1 = np.genfromtxt('../features/p2_x.csv', delimiter="\n")
-# feature2 = np.genfromtxt('../features/p3_x.csv', delimiter="\n")
-# feature3 = np.genfromtxt('../features/p2_y.csv', delimiter="\n")
-# feature4 = np.genfromtxt('../features/p3_y.csv', delimiter="\n")
-# features5 = np.transpose(np.array([feature1, feature2, feature3, feature4]))
-
 # Input (features and targets) of the regression
-features = np.genfromtxt('../features/train_p2_x.csv', delimiter="\n").reshape(-1, 1)
-
+feature1 = np.genfromtxt('../features/train_p2_x.csv', delimiter="\n")
+feature2 = np.genfromtxt('../features/train_p3_x.csv', delimiter="\n")
+feature3 = np.genfromtxt('../features/train_p2_y.csv', delimiter="\n")
+feature4 = np.genfromtxt('../features/train_p3_y.csv', delimiter="\n")
+features = np.transpose(np.array([feature1, feature2, feature3, feature4]))
 targets = np.genfromtxt('../data/targets.csv', delimiter="\n").astype(int)
 
-# Features for the prediction
-#toPredictFeatures = np.genfromtxt('../features/test_p2_x.csv', delimiter=",")
 
-# alphas, features, targets, prediction=False, toPredict=np.empty(1, dtype=int)
+# Features for the prediction
+toPredictFeatures1 = np.genfromtxt('../features/test_p2_x.csv', delimiter="\n")
+toPredictFeatures2 = np.genfromtxt('../features/test_p3_x.csv', delimiter="\n")
+toPredictFeatures3 = np.genfromtxt('../features/test_p2_y.csv', delimiter="\n")
+toPredictFeatures4 = np.genfromtxt('../features/test_p3_y.csv', delimiter="\n")
+toPredictFeatures = np.transpose(np.array([toPredictFeatures1, toPredictFeatures2, toPredictFeatures3, toPredictFeatures4]))
+
 def svmclassification(features, targets, C=1, kernel='rbf', gamma='auto', decision_function_shape=None, prediction=False, toPredict=np.empty(1, dtype=int)):
     # More info at:
     # http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html#sklearn.svm.SVC
@@ -39,25 +40,14 @@ def svmclassification(features, targets, C=1, kernel='rbf', gamma='auto', decisi
     # gamma: kernel coefficient (float) for 'rbf', 'poly' and 'sigmoid'.If gamma is 'auto' then 1 / n_features will be used instead.
     # decision_function_shape returns a one-vs-rest (ovr) or the one-vs-one (ovo) decision 		# function (by default with None)
 
-    print(C)
-    print(kernel)
-    print(decision_function_shape)
-
     # We set up the model
     modelSVM = svm.SVC(C=C, kernel=kernel, decision_function_shape=decision_function_shape)
 
     # We compute the model
-    print(features)
-    print(features.shape)
-    print(targets)
-    print(targets.shape)
-    print(features.dtype)
-    print(targets.dtype) 
-   
     modelSVM.fit(features, targets)
 
     # Compute the distance of the samples X to the separating hyperplane.
-    # Return : array-like, shape (n_samples, 1)
+    # Return : array-like, shape (n_samples,)
     dist = modelSVM.decision_function(features)
 
     # We compute the score (mean accuracy wrt. to the real output targets)
@@ -71,28 +61,22 @@ def svmclassification(features, targets, C=1, kernel='rbf', gamma='auto', decisi
     # Coefficients of the support vector in the decision function dual_coef_ : array, shape = [1, n_SV]
     # Constants in decision function intercept_ : array, shape = [1]
 
-    print("SV: {0} SV indices: {1} SV repartition: {2} SV coefficients: {3} Intercept: {4}".format(modelSVM.support_vectors_, modelSVM.support_, modelSVM.n_support_, modelSVM.dual_coef_, modelSVM.intercept_))
+    print("SV: {0} SV indices: {1} SV repartition: {2} SV coefficients: {3} Intercept: {4} Score: {5}".format(modelSVM.support_vectors_, modelSVM.support_, modelSVM.n_support_, modelSVM.dual_coef_, modelSVM.intercept_, scoreFinal))
 
     # Prediction
     if prediction==True:
         predictionOutput = (modelSVM.predict(toPredict))
-        return {'SV': modelSVM.support_vectors_, 'SV indices': modelSVM.support_, 'SV repartition': modelSVM.n_support_, 'SV coefficients': modelSVM.dual_coef_, 'Intercept': modelSVM.intercept_, 'PredictedClass': predictionOutput}
+        return {'SV': modelSVM.support_vectors_, 'SV indices': modelSVM.support_, 'SV repartition': modelSVM.n_support_, 'SV coefficients': modelSVM.dual_coef_, 'Intercept': modelSVM.intercept_, 'Score': scoreFinal, 'PredictedClass': predictionOutput}
     else:
-        return {'SV': modelSVM.support_vectors_, 'SV indices': modelSVM.support_, 'SV repartition': modelSVM.n_support_, 'SV coefficients': modelSVM.dual_coef_, 'Intercept': modelSVM.intercept_}
+        return {'SV': modelSVM.support_vectors_, 'SV indices': modelSVM.support_, 'SV repartition': modelSVM.n_support_, 'SV coefficients': modelSVM.dual_coef_, 'Intercept': modelSVM.intercept_, 'Score': scoreFinal}
 
 # compute the regression for several C
 #c = np.linspace(0.00000000001,0.0000001,10001)
+c = 1.0
 
-c = 1
-
-#coefficient, alpha, score, intercept, predictedtargetss
 print("Start SVM classification with C = "+str(c))
 prediction = False
-#print(features)
-#print(features.shape)
-#print(targets)
-#print(targets.shape)
-svmclassification(features, targets, c, gamma='auto', prediction=False)
+svmclassification(features, targets, c, kernel='rbf', gamma='auto', decision_function_shape=None, prediction=False, toPredict=np.empty(1, dtype=int))
 
 # write in a csv file
 if prediction==True:
