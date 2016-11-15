@@ -44,7 +44,7 @@ def svmclassification(features, targets, C=1, kernel='rbf', gamma='auto', decisi
     print(decision_function_shape)
 
     # We set up the model
-    modelSVM = svm.SVC(C, kernel, decision_function_shape)
+    modelSVM = svm.SVC(C=C, kernel=kernel, decision_function_shape=decision_function_shape)
 
     # We compute the model
     print(features)
