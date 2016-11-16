@@ -35,8 +35,8 @@ features = np.genfromtxt('../features/train_section_features.csv', delimiter=","
 targets = np.genfromtxt('../data/targets.csv', delimiter="\n").astype(int)
 toPredictFeatures = np.genfromtxt('../features/test_section_features.csv', delimiter=",")
 
-print(features.shape)
-print(toPredictFeatures.shape)
+#print(features.shape)
+#print(toPredictFeatures.shape)
 
 def svmclassification(features, targets, C=1, kernel='rbf', degree=3, gamma='auto', decision_function_shape=None, prediction=False, toPredict=np.empty(1, dtype=int)):
     # More info at:
@@ -69,7 +69,9 @@ def svmclassification(features, targets, C=1, kernel='rbf', degree=3, gamma='aut
     # Coefficients of the support vector in the decision function dual_coef_ : array, shape = [1, n_SV]
     # Constants in decision function intercept_ : array, shape = [1]
 
-    print("SV: {0} SV indices: {1} SV repartition: {2} SV coefficients: {3} Intercept: {4} Score: {5}".format(modelSVM.support_vectors_, modelSVM.support_, modelSVM.n_support_, modelSVM.dual_coef_, modelSVM.intercept_, scoreFinal))
+    #print("SV: {0} SV indices: {1} SV repartition: {2} SV coefficients: {3} Intercept: {4} Score: {5}".format(modelSVM.support_vectors_, modelSVM.support_, modelSVM.n_support_, modelSVM.dual_coef_, modelSVM.intercept_, scoreFinal))
+
+    print("SV repartition: {0} Score: {1}".format(modelSVM.n_support_, scoreFinal))
 
     # Prediction
     if prediction==True:
@@ -80,7 +82,8 @@ def svmclassification(features, targets, C=1, kernel='rbf', degree=3, gamma='aut
 
 # compute the regression for several C
 #c = np.linspace(0.00000000001,0.0000001,10001)
-c = 1
+#c = 0.000001
+kernel='linear'
 
 '''
 print(features.shape)
@@ -92,22 +95,26 @@ print(targets)
 print(toPredictFeatures)
 '''
 
-print("Start SVM classification with C = "+str(c))
-prediction = True
-#results = svmclassification(features, targets, c, kernel='linear', degree=3, gamma='auto', decision_function_shape=None, prediction=False, toPredict=np.empty(1, dtype=int))
-results = svmclassification(features, targets, C=c, kernel='linear', degree=3, gamma='auto', decision_function_shape=None, prediction=True, toPredict=toPredictFeatures)
+for n in range(-7, 4):
+    c = 10**n
+    print("Start SVM classification with C = "+str(c))
+    prediction = True
+    #results = svmclassification(features, targets, C=c, kernel=kernel, degree=3, gamma='auto', decision_function_shape=None, prediction=False, toPredict=np.empty(1, dtype=int))
+    results = svmclassification(features, targets, C=c, kernel=kernel, degree=2, gamma='auto', decision_function_shape=None, prediction=True, toPredict=toPredictFeatures)
 
-print(results['PredictedClass'].shape)
-print(results['PredictedClass'])
+    #print(results['PredictedClass'].shape)
+    print(results['PredictedClass'])
 
 # write in a csv file
-if prediction==True:
-    PredictedClass = results['PredictedClass']
-    result = open('../results/prediction.csv','w')
-    result.write("ID,Prediction,C:,"+str(c)+"\n")
-    for id in range(TEST):
-        result.write(str(id+1)+","+str(PredictedClass[id])+"\n")
-    result.close()
+    if prediction==True:
+        PredictedClass = results['PredictedClass']
+        result = open('../results/prediction'+kernel+str(c)+'.csv','w')
+        result.write("ID,Prediction,C:,"+str(c)+"\n")
+        for id in range(TEST):
+            result.write(str(id+1)+","+str(PredictedClass[id])+"\n")
+        result.close()
+
+    
 
 '''
 X = np.array([[-1, -1], [-5, -1], [8, 1], [2, 1]])
