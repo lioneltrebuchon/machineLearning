@@ -38,7 +38,7 @@ toPredictFeatures = np.genfromtxt('../features/test_section_features.csv', delim
 print(features.shape)
 print(toPredictFeatures.shape)
 
-def svmclassification(features, targets, C=1, kernel='rbf', gamma='auto', decision_function_shape=None, prediction=False, toPredict=np.empty(1, dtype=int)):
+def svmclassification(features, targets, C=1, kernel='rbf', degree=3, gamma='auto', decision_function_shape=None, prediction=False, toPredict=np.empty(1, dtype=int)):
     # More info at:
     # http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html#sklearn.svm.SVC
 
@@ -49,9 +49,7 @@ def svmclassification(features, targets, C=1, kernel='rbf', gamma='auto', decisi
     # decision_function_shape returns a one-vs-rest (ovr) or the one-vs-one (ovo) decision 		# function (by default with None)
 
     # We set up the model
-    modelSVM = svm.SVC(C=C, kernel=kernel, decision_function_shape=decision_function_shape)
-
-    print(C)
+    modelSVM = svm.SVC(C=C, kernel=kernel, degree=degree, gamma=gamma, decision_function_shape=decision_function_shape)
 
     # We compute the model
     modelSVM.fit(features, targets)
@@ -82,7 +80,7 @@ def svmclassification(features, targets, C=1, kernel='rbf', gamma='auto', decisi
 
 # compute the regression for several C
 #c = np.linspace(0.00000000001,0.0000001,10001)
-c = 1000000
+c = 1
 
 '''
 print(features.shape)
@@ -96,8 +94,8 @@ print(toPredictFeatures)
 
 print("Start SVM classification with C = "+str(c))
 prediction = True
-#results = svmclassification(features, targets, c, kernel='linear', gamma='auto', decision_function_shape=None, prediction=False, toPredict=np.empty(1, dtype=int))
-results = svmclassification(features, targets, C=c, kernel='linear', gamma='auto', decision_function_shape=None, prediction=True, toPredict=toPredictFeatures)
+#results = svmclassification(features, targets, c, kernel='linear', degree=3, gamma='auto', decision_function_shape=None, prediction=False, toPredict=np.empty(1, dtype=int))
+results = svmclassification(features, targets, C=c, kernel='linear', degree=3, gamma='auto', decision_function_shape=None, prediction=True, toPredict=toPredictFeatures)
 
 print(results['PredictedClass'].shape)
 print(results['PredictedClass'])
