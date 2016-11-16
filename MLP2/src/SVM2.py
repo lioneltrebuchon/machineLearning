@@ -1,15 +1,16 @@
-###########################################################################################################################
+########################################################################
 
-# Python script which computes all the peaks features (p1_x, p1_y, p2_x, p2_y, p3_x p3_y) for the train set and save them in separated files
+# Python script to output result from SVM classification
 
-###########################################################################################################################
+########################################################################
+
+TEST=138
+TRAIN=278
 
 import numpy as np
 import nibabel as nib
 import matplotlib as mpl
-mpl.use('Agg')
 import matplotlib.pyplot as plt
-import sys
 import sklearn as sk
 from sklearn import svm
 
@@ -20,7 +21,6 @@ feature3 = np.genfromtxt('../features/train_p2_y.csv', delimiter="\n")
 feature4 = np.genfromtxt('../features/train_p3_y.csv', delimiter="\n")
 features = np.transpose(np.array([feature1, feature2, feature3, feature4]))
 targets = np.genfromtxt('../data/targets.csv', delimiter="\n").astype(int)
-
 
 # Features for the prediction
 toPredictFeatures1 = np.genfromtxt('../features/test_p2_x.csv', delimiter="\n")
@@ -71,67 +71,43 @@ def svmclassification(features, targets, C=1, kernel='rbf', gamma='auto', decisi
 
 # compute the regression for several C
 #c = np.linspace(0.00000000001,0.0000001,10001)
-c = 1.0
+c = 1
+
+print(c)
+print(features.shape)
+print(features)
+print(targets.shape)
+print(targets)
+print(toPredictFeatures.shape)
+print(toPredictFeatures)
 
 print("Start SVM classification with C = "+str(c))
-prediction = False
-results = svmclassification(features, targets, c, kernel='rbf', gamma='auto', decision_function_shape=None, prediction=False, toPredict=np.empty(1, dtype=int))
+prediction = True
+#results = svmclassification(features, targets, c, kernel='rbf', gamma='auto', decision_function_shape=None, prediction=False, toPredict=np.empty(1, dtype=int))
+results = svmclassification(features, targets, c, kernel='poly', gamma=3, decision_function_shape=None, prediction=True, toPredict=toPredictFeatures)
+
+print(results['PredictedClass'])
 
 # write in a csv file
 if prediction==True:
     PredictedClass = results['PredictedClass']
     result = open('../results/prediction.csv','w')
-    result.write("ID,Prediction,C:,"+str(C)+"\n")
+    result.write("ID,Prediction,C:,"+str(c)+"\n")
     for id in range(TEST):
         result.write(str(id+1)+","+str(PredictedClass[id])+"\n")
     result.close()
 
-
-from detect_peaks import detect_peaks
-
-#''' (remove/add # to switch)
-X = 176
-Y = 208
-Z = 176
-N_TRAIN = 278
-''' #for testing with smaller values
-X = 50
-Y = 50
-Z = 50
-N_TRAIN = 2
-#'''
-
-train = [None]*N_TRAIN
-data = [None]*N_TRAIN
-
-files = []
-
-for mph in [5000, 6500, 8000, 9500, 1100]:
-    files.append([open("../preproc/mph"+str(mph)+"_mpd"+str(mpd)+"_from"+str(sys.argv[1])+"to"+str(sys.argv[2]), "w") for mpd in [15,20,22,24,26,28,30]])
-
-for i in range(int(sys.argv[1]),int(sys.argv[2])):
-    print("Computing features of train"+str(i+1)+"...")
-
-    train[i] = nib.load("../data/set_train/train_"+str(i+1)+".nii")
-    data[i] = train[i].get_data()
-
-    # store all the non zero values in a 1D list
-    intList=[]
-    vol = 0
-    for x in range(X):
-        for y in range(Y):
-            for z in range(Z):
-                if data[i][x,y,z]!=0:
-                    intList.append(int(data[i][x,y,z]))
-                    vol+=1
-
-    # compute the peaks and save them
-    values=plt.hist(intList, 200)
-    for mph in [5000, 6500, 8000, 9500, 1100]:
-    	for mpd in [15,20,22,24,26,28,30]:
-    		peakIndexes=detect_peaks(values[0], mph, mpd, show=False)
-    		files[mph][mpd].write(len(peakIndexes))
-
-for mph in [5000, 6500, 8000, 9500, 1100]:
-    for mpd in [15,20,22,24,26,28,30]:
-    	files[mph][mpd].close()
+'''
+X = np.array([[-1, -1], [-5, -1], [8, 1], [2, 1]])
+y = np.array([1, 1, 2, 2])
+clf = svm.SVC()
+clf.fit(X, y)
+clf.decision_function(X)
+print(clf.support_vectors_)
+print(clf.support_)
+print(clf.n_support_)
+print(clf.dual_coef_)
+print(clf.intercept_)
+print(clf.score(X, y))
+print(clf.predict(X))
+'''
