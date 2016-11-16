@@ -9,7 +9,7 @@ import nibabel as nib
 import matplotlib as mpl
 mpl.use('Agg')
 import matplotlib.pyplot as plt
-
+import sys
 import sklearn as sk
 from sklearn import svm
 
@@ -107,9 +107,9 @@ data = [None]*N_TRAIN
 files = []
 
 for mph in [5000, 6500, 8000, 9500, 1100]:
-    files.append([open("../preproc/mph"+str(mph)+"_mpd"+str(mpd)+"_from"+str(sys.argv(1))+"to"+str(sys.argv(2)), "w") for mpd in [15,20,22,24,26,28,30]])
+    files.append([open("../preproc/mph"+str(mph)+"_mpd"+str(mpd)+"_from"+str(sys.argv[1])+"to"+str(sys.argv[2]), "w") for mpd in [15,20,22,24,26,28,30]])
 
-for i in range(sys.argv(1),sys.argv(2)):
+for i in range(int(sys.argv[1]),int(sys.argv[2])):
     print("Computing features of train"+str(i+1)+"...")
 
     train[i] = nib.load("../data/set_train/train_"+str(i+1)+".nii")
@@ -127,8 +127,8 @@ for i in range(sys.argv(1),sys.argv(2)):
 
     # compute the peaks and save them
     values=plt.hist(intList, 200)
-    for mph in [5000, 6500, 8000, 9500, 1100]
-    	for mpd in [15,20,22,24,26,28,30]
+    for mph in [5000, 6500, 8000, 9500, 1100]:
+    	for mpd in [15,20,22,24,26,28,30]:
     		peakIndexes=detect_peaks(values[0], mph, mpd, show=False)
     		files[mph][mpd].write(len(peakIndexes))
 
