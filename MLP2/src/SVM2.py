@@ -73,20 +73,23 @@ def svmclassification(features, targets, C=1, kernel='rbf', gamma='auto', decisi
 #c = np.linspace(0.00000000001,0.0000001,10001)
 c = 1
 
-print(c)
+'''
 print(features.shape)
-print(features)
 print(targets.shape)
-print(targets)
 print(toPredictFeatures.shape)
+print(c)
+print(features)
+print(targets)
 print(toPredictFeatures)
+'''
 
 print("Start SVM classification with C = "+str(c))
 prediction = True
-#results = svmclassification(features, targets, c, kernel='rbf', gamma='auto', decision_function_shape=None, prediction=False, toPredict=np.empty(1, dtype=int))
-results = svmclassification(features, targets, c, kernel='poly', gamma=3, decision_function_shape=None, prediction=True, toPredict=toPredictFeatures)
+#results = svmclassification(features, targets, c, kernel='linear', gamma='auto', decision_function_shape=None, prediction=False, toPredict=np.empty(1, dtype=int))
+results = svmclassification(features, targets, c, kernel='linear', gamma='auto', decision_function_shape=None, prediction=True, toPredict=toPredictFeatures)
 
-print(results['PredictedClass'])
+print(results['PredictedClass'].shape)
+#print(results['PredictedClass'])
 
 # write in a csv file
 if prediction==True:
