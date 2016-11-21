@@ -31,8 +31,10 @@ toPredictFeatures4 = np.genfromtxt('../features/test_p3_y.csv', delimiter="\n")
 toPredictFeatures = np.transpose(np.array([toPredictFeatures1, toPredictFeatures2, toPredictFeatures3, toPredictFeatures4]))
 '''
 
-features = np.genfromtxt('../features/filtered_train_section_features.csv', delimiter=",")
-targets = np.genfromtxt('../data/filtered_targets.csv', delimiter="\n").astype(int)
+features = np.genfromtxt('../features/train_section_features.csv', delimiter=",")
+targets = np.genfromtxt('../data/targets.csv', delimiter="\n").astype(int)
+#features = np.genfromtxt('../features/filtered_train_section_features.csv', delimiter=",")
+#targets = np.genfromtxt('../data/filtered_targets.csv', delimiter="\n").astype(int)
 toPredictFeatures = np.genfromtxt('../features/test_section_features.csv', delimiter=",")
 
 #print(features.shape)
@@ -95,7 +97,7 @@ print(targets)
 print(toPredictFeatures)
 '''
 
-for n in range(0, 4):
+for n in range(-5, 5):
     c = 10**n
     print("Start SVM classification with C = "+str(c))
     prediction = True
@@ -104,11 +106,18 @@ for n in range(0, 4):
 
     #print(results['PredictedClass'].shape)
     print(results['PredictedClass'])
-    '''
-    if prediction==True:
+
+if prediction==True:
+	testIs2or3 = np.genfromtxt('../data/testIs2or3.csv', delimiter="\n")
         PredictedClass = results['PredictedClass']
         result = open('../results/prediction'+kernel+str(c)+'.csv','w')
-        result.write("ID,Prediction,C:,"+str(c)+"\n")
+        result.write("ID,Prediction"+"\n")
         for id in range(TEST):
-            result.write(str(id+1)+","+str(PredictedClass[id])+"\n")
+		'''		
+		if testIs2or3[id]==2:
+			result.write(str(id+1)+","+str(1)+"\n")
+		else:
+        		result.write(str(id+1)+","+str(PredictedClass[id])+"\n")
+		'''		
+		result.write(str(id+1)+","+str(PredictedClass[id])+"\n")
         result.close()
