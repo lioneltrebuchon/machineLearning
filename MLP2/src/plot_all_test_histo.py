@@ -26,11 +26,8 @@ Y = 10
 Z = 10
 T = 2
 #'''
-STATUS = ["diseased","healthy"]
 test = [None]*T
 data = [None]*T
-
-labels = np.genfromtxt('../data/targets.csv', delimiter="\n")
 
 for i in range(int(sys.argv[1]),int(sys.argv[2])):
     print("plotting histogram of test"+str(i+1)+"...")
@@ -53,8 +50,8 @@ for i in range(int(sys.argv[1]),int(sys.argv[2])):
     bins = range(0, 2000 + binwidth, binwidth)
     plt.hist(intList, bins=bins)
     plt.axis([0, 2000, 0, 40000])
-    plt.title("Histogram of test"+str(i+1)+" ("+STATUS[int(labels[i])]+")")
+    plt.title("Histogram of test"+str(i+1))
     plt.xlabel("Values of the 3D brain")
     plt.ylabel("Frequencies")
-    histo.savefig("../plots/plot_histo_"+STATUS[int(labels[i])]+"_test"+str(i+1)+".png")
+    histo.savefig("../plots/plot_histo_test"+str(i+1)+".png")
     plt.clf() #close figure
