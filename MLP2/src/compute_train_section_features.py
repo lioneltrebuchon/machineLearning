@@ -11,8 +11,11 @@ import nibabel as nib
 X = 176
 Y = 208
 Z = 176
-N_TRAIN = 278
-N_SECTIONS = 16 #16 sections in each direction, so 48 sections in total
+if sys.argv[3] == 'train':
+    N_TRAIN = 278
+elif sys.argv[3] == 'test':
+    N_TRAIN = 1
+N_SECTIONS = 16 #16 sections in each direction, so 3*16=48 sections in total
 N_RANGES = 48   #48 ranges of intensity for the histogram
 ''' #for training with smaller values
 X = 50
@@ -33,12 +36,12 @@ sizeSectionZ = Z/N_SECTIONS
 train = [None]*N_TRAIN
 data = [None]*N_TRAIN
 
-featuresFile = open('.../features/train_section_features.csv','w')
+featuresFile = open('../features/'+sys.argv[3]+'_section_features'+sys.arg[1]+'to'+sys.argv[2]+'.csv','w')
 
-for i in xrange(N_TRAIN):
+for i in xrange(int(sys.argv[1]-1),int(sys.argv[2]):
     print("Computing features of train"+str(i+1)+"...")
     
-    train[i] = nib.load("../data/set_train/train_"+str(i+1)+".nii")
+    train[i] = nib.load("../data/set_"+sys.argv[3]+"/"+sys.argv[3]+"_"+str(i+1)+".nii")
     data[i] = train[i].get_data()
     
     feature = np.zeros((3,N_SECTIONS,N_RANGES),np.uint)    
@@ -54,7 +57,7 @@ for i in xrange(N_TRAIN):
                 D = data[i][x,y,z]
                 if D>0:
                     r = D/sizeRange
-                    if r<16:
+                    if r<N_RANGES:
                         feature[0,secX,r]+=1
                         feature[1,secY,r]+=1
                         feature[2,secZ,r]+=1
