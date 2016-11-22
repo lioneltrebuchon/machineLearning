@@ -14,8 +14,15 @@ import matplotlib.pyplot as plt
 import sklearn as sk
 from sklearn import linear_model
 
-# Input (features and age) of the regression
-features = np.genfromtxt('../features/train_section_features.csv', delimiter=",")
+
+# Input (features and "age" (diseased or nor)) of the regression
+feature1 = np.genfromtxt('../features/p2_x.csv', delimiter="\n")
+feature2 = np.genfromtxt('../features/p3_x.csv', delimiter="\n")
+feature3 = np.genfromtxt('../features/p2_y.csv', delimiter="\n")
+feature4 = np.genfromtxt('../features/p3_y.csv', delimiter="\n")
+feature5 = np.genfromtxt('../features/train_section_features.csv', delimiter=",")
+features = np.transpose(np.array([feature1, feature2, feature3, feature4, feature5]))
+
 age = np.genfromtxt('../data/targets.csv', delimiter="\n")
 
 # Features for the prediction
