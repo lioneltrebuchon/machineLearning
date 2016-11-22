@@ -47,7 +47,7 @@ def ridgeRegression(alphas, features, age, prediction=False, toPredict=np.empty(
         return {'Coefficient': modelRidge.coef_, 'Alpha': modelRidge.alpha_, 'Score': scoreFinal, 'Intercept': modelRidge.intercept_}
 
 # compute the regression for several alphas
-alphas = [1]
+alphas = [5]
 #alphas = np.linspace(1, 10000, 10000)
 
 #coefficient, alpha, score, intercept, predictedAges

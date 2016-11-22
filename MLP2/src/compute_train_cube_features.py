@@ -38,10 +38,10 @@ featuresFile = open('../features/train_cube_features.csv','w')
 
 for i in xrange(N_TRAIN):
     print("Computing features of train"+str(i+1)+"...")
-    
+
     train[i] = nib.load("/local/set_train/train_"+str(i+1)+".nii")
     data[i] = train[i].get_data()
-    
+
     feature = np.zeros((3,N_SECTIONS,N_RANGES),np.uint)
     cube = np.zeros( (N_CUBES, N_RANGES),np.uint)
     flag = np.zeros(N_CUBES,np.uint)
@@ -58,7 +58,7 @@ for i in xrange(N_TRAIN):
                 cubeNr = secX + secY*sizeSectionX + secZ*sizeSectionX*sizeSectionY
                 if D>0:
                     r = D/sizeRange
-                    if r<16:
+                    if r<N_RANGES:
 						cube[ cubeNr , r] += 1
                         # feature[0,secX,r]+=1
                         # feature[1,secY,r]+=1
@@ -75,7 +75,7 @@ for i in xrange(N_TRAIN):
                 featuresFile.write(',')
             # featuresFile.write(str(feature[s,r]))
             featuresFile.write(str(cube[s,r]))
-    
+
 	featuresFile.write('\n')
-    
+
 featuresFile.close()
