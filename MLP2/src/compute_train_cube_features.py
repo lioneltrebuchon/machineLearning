@@ -12,7 +12,7 @@ X = 176
 Y = 208
 Z = 176
 N_TRAIN = 278
-N_SECTIONS = 16 #16 sections in each direction, so 48 sections in total
+N_SECTIONS = 8 #8 sections in each direction, so 8^3 sections in total
 N_RANGES = 48   #48 ranges of intensity for the histogram
 ''' #for training with smaller values
 X = 50
@@ -44,7 +44,7 @@ for i in xrange(N_TRAIN):
 
     feature = np.zeros((3,N_SECTIONS,N_RANGES),np.uint)
     cube = np.zeros( (N_CUBES, N_RANGES),np.uint)
-    flag = np.zeros(N_CUBES,np.uint)
+    flag = np.zeros(N_CUBES,np.uint) 
 
     # Compute the features: each pixel is exactly in 3 sections (an x section, an y section, and a z section) so we go through all the pixels and change the values of the 3 corresponding features
 
@@ -55,7 +55,7 @@ for i in xrange(N_TRAIN):
             for z in xrange(Z):
                 secZ = z/sizeSectionZ
                 D = data[i][x,y,z]
-                cubeNr = secX + secY*sizeSectionX + secZ*sizeSectionX*sizeSectionY
+                cubeNr = secX + secY*N_SECTIONS + secZ*N_SECTIONS*N_SECTIONS
                 if D>0:
                     r = D/sizeRange
                     if r<N_RANGES:
