@@ -35,7 +35,7 @@ labels = np.genfromtxt('../data/targets.csv', delimiter="\n")
 #black->white colormap
 colormap = mpl.colors.LinearSegmentedColormap.from_list('my_colormap',['black','white'],256)
 
-for i in range(T):
+for i in range(110,T):
 	print("plotting train"+str(i+1)+"...")
 	#relative path
 	train[i] = nib.load("../data/set_train/train_"+str(i+1)+".nii")
