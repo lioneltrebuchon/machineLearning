@@ -9,6 +9,9 @@ import nibabel as nib
 import sys
 
 imagesSet = sys.argv[1]
+firstImage = sys.argv[2]
+lastImage = sys.argv[3]
+
 #''' (remove/add # to switch)
 X = 176
 Y = 208
@@ -39,14 +42,14 @@ sizeRange = maxIntensity / N_RANGES
 sizeSectionX = X/N_SECTIONS
 sizeSectionY = Y/N_SECTIONS
 sizeSectionZ = Z/N_SECTIONS
-N_CUBES = N_SECTIONS*N_SECTIONS*N_SECTIONS
+N_CUBES = (N_SECTIONS-2*N_MARGIN)**3
 
 images = [None]*N_IMAGES
 data = [None]*N_IMAGES
 
-featuresFile = open('../features/'+imagesSet+'_cube_features.csv','w')
+featuresFile = open('../features/'+imagesSet+'_cube_features_from'+firstImage+'to'+lastImage+'.csv','w')
 
-for i in xrange(int(sys.argv[2])-1,int(sys.argv[3])):
+for i in xrange(int(firstImage)-1,int(lastImage)):
     print("Computing features of "+imagesSet+str(i+1)+"...")
 
     images[i] = nib.load("../data/set_"+imagesSet+"/"+imagesSet+"_"+str(i+1)+".nii")
@@ -68,7 +71,7 @@ for i in xrange(int(sys.argv[2])-1,int(sys.argv[3])):
                         secZ = z/sizeSectionZ
                         if secZ >= N_MARGIN and secZ < N_SECTIONS-N_MARGIN:
                             D = data[i][x,y,z]
-                            cubeNr = (secX-N_MARGIN) + (secY-N_MARGIN)*N_SECTIONS + (secZ-N_MARGIN)*N_SECTIONS*N_SECTIONS
+                            cubeNr = (secX-N_MARGIN) + (secY-N_MARGIN)*(N_SECTIONS-2*N_MARGIN) + (secZ-N_MARGIN)*(N_SECTIONS-2*N_MARGIN)**2
                             if D>0:
                                 r = D/sizeRange
                                 if r<N_RANGES:
@@ -76,8 +79,6 @@ for i in xrange(int(sys.argv[2])-1,int(sys.argv[3])):
                                     # feature[0,secX,r]+=1
                                     # feature[1,secY,r]+=1
                                     # feature[2,secZ,r]+=1
-                            else: # remember if a cube has 0 values inside, it is part of the outer brain
-                                flag[cubeNr]=1
 
     # Write the features in the .csv file: 1 line per image
 
@@ -86,9 +87,7 @@ for i in xrange(int(sys.argv[2])-1,int(sys.argv[3])):
         for r in xrange(N_RANGES):
             if s+r != 0:
                 featuresFile.write(',')
-            # featuresFile.write(str(feature[s,r]))
             featuresFile.write(str(cube[s,r]))
-
-	featuresFile.write('\n')
+    featuresFile.write('\n')
 
 featuresFile.close()
