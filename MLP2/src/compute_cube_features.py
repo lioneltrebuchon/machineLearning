@@ -47,9 +47,9 @@ N_CUBES = (N_SECTIONS-2*N_MARGIN)**3
 images = [None]*N_IMAGES
 data = [None]*N_IMAGES
 
-featuresFile = open('../features/'+imagesSet+'_cube_features_from'+firstImage+'to'+lastImage+'.csv','w')
+featuresFile = open('../features/cube'+imagesSet+'_cube_features_from'+firstImage+'to'+lastImage+'.csv','w')
 
-for i in xrange(int(firstImage)-1,min(int(lastImage), N_IMAGES):
+for i in xrange(int(firstImage)-1,min(int(lastImage), N_IMAGES)):
     print("Computing features of "+imagesSet+str(i+1)+"...")
 
     images[i] = nib.load("../data/set_"+imagesSet+"/"+imagesSet+"_"+str(i+1)+".nii")
