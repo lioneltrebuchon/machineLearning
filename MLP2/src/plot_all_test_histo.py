@@ -26,6 +26,7 @@ Y = 10
 Z = 10
 T = 2
 #'''
+
 STATUS = ["diseased","healthy"]
 test = [None]*T
 data = [None]*T

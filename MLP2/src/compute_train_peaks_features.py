@@ -7,7 +7,7 @@
 import numpy as np
 import nibabel as nib
 import matplotlib as mpl
-mpl.use('Agg')
+#mpl.use('Agg')
 import matplotlib.pyplot as plt
 
 from detect_peaks import detect_peaks
@@ -27,19 +27,19 @@ N_TRAIN = 2
 train = [None]*N_TRAIN
 data = [None]*N_TRAIN
 
-fp1_x = open('.../features/train_p1_x.csv','w')
-fp1_y = open('.../features/train_p1_y.csv','w')
-fp2_x = open('.../features/train_p2_x.csv','w')
-fp2_y = open('.../features/train_p2_y.csv','w')
-fp3_x = open('.../features/train_p3_x.csv','w')
-fp3_y = open('.../features/train_p3_y.csv','w')
+fp1_x = open('../features/train_p1_x.csv','w')
+fp1_y = open('../features/train_p1_y.csv','w')
+fp2_x = open('../features/train_p2_x.csv','w')
+fp2_y = open('../features/train_p2_y.csv','w')
+fp3_x = open('../features/train_p3_x.csv','w')
+fp3_y = open('../features/train_p3_y.csv','w')
 
 for i in range(N_TRAIN):
     print("Computing features of train"+str(i+1)+"...")
-    
+
     train[i] = nib.load("../data/set_train/train_"+str(i+1)+".nii")
     data[i] = train[i].get_data()
-    
+
     # store all the non zero values in a 1D list
     intList=[]
     vol = 0
@@ -49,7 +49,7 @@ for i in range(N_TRAIN):
                 if data[i][x,y,z]!=0:
                     intList.append(int(data[i][x,y,z]))
                     vol+=1
-    
+
     # compute the peaks and save them
     values=plt.hist(intList, 200)
     peakIndexes=detect_peaks(values[0], mph = 1000, mpd = 30, show=False)
@@ -76,7 +76,7 @@ for i in range(N_TRAIN):
         fp2_y.write("0\n")
         fp3_x.write("0\n")
         fp3_y.write("0\n")
-        
+
 fp1_x.close()
 fp1_y.close()
 fp2_x.close()
