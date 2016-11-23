@@ -17,8 +17,8 @@ from sklearn import linear_model
 
 # Input (features and "age" (diseased or nor)) of the regression
 p2x = np.genfromtxt('../features/train_p2_x.csv', delimiter=",")
-p3x = np.genfromtxt('../features/train_p3_x.csv', delimiter=",")
 p2y = np.genfromtxt('../features/train_p2_y.csv', delimiter=",")
+p3x = np.genfromtxt('../features/train_p3_x.csv', delimiter=",")
 p3y = np.genfromtxt('../features/train_p3_y.csv', delimiter=",")
 sectionFeatures = np.genfromtxt('../features/train_section_features.csv', delimiter=",")
 features = np.concatenate([np.reshape(p2x,[-1,1]),np.reshape(p2y,[-1,1]),np.reshape(p3x,[-1,1]),np.reshape(p3y,[-1,1]),sectionFeatures],1)
@@ -59,22 +59,17 @@ def ridgeRegression(alphas, features, age, prediction=False, toPredict=np.empty(
 
 # compute the regression for several alphas
 #alphas = [0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000]
-#alphas = np.linspace(4, 8, 9)
-alphas = [6]
+alphas = np.linspace(5, 7, 20)
+#alphas = [6]
 
 for alpha in alphas:
-    #print(alpha)
     #coefficient, alpha, score, intercept, predictedAges
-    print("######")
     print("Start Ridge regression with different alphas "+str(alpha))
-    print("######")
     results = ridgeRegression([alpha], features, age, True, toPredict=toPredictFeatures)
-    print("######")
-    print("End of ridge "+str(alpha))
-    print("######")
+    #print("End of ridge "+str(alpha))
     predictedAges = results['PredictedAges']
 
-    print(predictedAges)
+    #print(predictedAges)
 
     # write in a csv file
     result = open('../results/ridgeTestPrepro'+str(alpha)+'.csv','w')
@@ -87,4 +82,5 @@ for alpha in alphas:
             result.write(str(id+1)+","+str(0)+"\n")
         else:
             result.write(str(id+1)+","+str(predictedAges[id])+"\n")
+            #print(str(predictedAges[id]))
     result.close()
