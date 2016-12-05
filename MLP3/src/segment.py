@@ -23,10 +23,10 @@ from sklearn import svm
 from scipy import ndimage
 from detect_peaks import detect_peaks
 
-image = nib.load("/local/set_train/train_1.nii")
+image = nib.load("../data/set_train/train_1.nii")
 data = image.get_data()
 slice = data[:,:,z,0]
-#slice = ndimage.gaussian_filter(slice, sigma=1)
+#slice = ndimage.gaussian_filter(slice, sigma=3)
 
 list=[]
 for x in range(X):
@@ -35,15 +35,21 @@ for x in range(X):
                     list.append(int(slice[x,y]))
 
 hist=plt.hist(list, 100)
-peakIndexes=detect_peaks(hist[0], mpd = 30, valley=True, show=True)
+peakIndexes=detect_peaks(hist[0], mpd = 30, valley=True, show=False)
 if len(peakIndexes)==3: #the first peak doesn't exist each time
     seuil = hist[1][peakIndexes[1]]
 else:
     print("Error: number of valleys different from 3\n")
-print("seuil = "+str(seuil))
+print("seuil = "+str(seuil)+"\n")
 
 
-segmentsSlice = (slice > 0).astype(np.int)+(slice > seuil).astype(np.int)
+whiteMask = (slice > seuil)
+
+surface = np.sum(whiteMask)
+print("surface = "+str(surface)+"\n")
+
+perimeter = np.sum(whiteMask[:,1:] != whiteMask[:,:-1]) + np.sum(whiteMask[1:,:] != whiteMask[:-1,:])
+print("perimeter = "+str(perimeter)+"\n")
 
 whiteMatter = (slice > seuil)*slice
 grayMatter = (slice < seuil)*(slice > 0)*slice
@@ -51,19 +57,16 @@ grayMatter = (slice < seuil)*(slice > 0)*slice
 bothMatters = (slice > seuil)*slice+(slice < seuil)*(slice > 0)*(-slice)
 
 colormap = mpl.colors.LinearSegmentedColormap.from_list('my_colormap',['black','white'],256)
-redmap = mpl.colors.LinearSegmentedColormap.from_list('my_colormap',['black','red'],256)
-bluemap = mpl.colors.LinearSegmentedColormap.from_list('my_colormap',['black','blue'],256)
 doublemap = mpl.colors.LinearSegmentedColormap.from_list('my_colormap',['red','black','blue'],256)
 
 norm = plt.Normalize(0, 2000)
 doublenorm = plt.Normalize(-2000, 2000)
 
-plt.figure(0)
+plt.figure(10)
 plt.imshow(slice, cmap = colormap, norm=norm)
-plt.figure(1)
-#plt.imshow(whiteMatter, cmap = bluemap, norm=norm)
-#plt.figure(2)
-#plt.imshow(grayMatter, cmap = redmap, norm=norm)
+plt.figure(20)
+plt.imshow(whiteMask, cmap = colormap)
+plt.figure(30)
 plt.imshow(bothMatters, cmap = doublemap, norm=doublenorm)
 plt.show()
 plt.close()
