@@ -28,22 +28,22 @@ def ridgeRegression(alphas, features, age, prediction=False, toPredict=np.empty(
         return {'Coefficient': modelRidge.coef_, 'Alpha': modelRidge.alpha_, 'Score': scoreFinal, 'Intercept': modelRidge.intercept_}
 
 # Read features and ages of the train set
-sectionFeatures = np.genfromtxt('features/train_section_features.csv', delimiter=",")
-p2x = np.genfromtxt('features/train_p2_x.csv', delimiter=",")
-p2y = np.genfromtxt('features/train_p2_y.csv', delimiter=",")
-p3x = np.genfromtxt('features/train_p3_x.csv', delimiter=",")
-p3y = np.genfromtxt('features/train_p3_y.csv', delimiter=",")
+sectionFeatures = np.genfromtxt('src/features/train_section_features.csv', delimiter=",")
+p2x = np.genfromtxt('src/features/train_p2_x.csv', delimiter=",")
+p2y = np.genfromtxt('src/features/train_p2_y.csv', delimiter=",")
+p3x = np.genfromtxt('src/features/train_p3_x.csv', delimiter=",")
+p3y = np.genfromtxt('src/features/train_p3_y.csv', delimiter=",")
 
 features = np.concatenate([sectionFeatures,np.reshape(p2x,[-1,1]),np.reshape(p2y,[-1,1]),np.reshape(p3x,[-1,1]),np.reshape(p3y,[-1,1])],1)
 
-age = np.genfromtxt('targets.csv', delimiter="\n")
+age = np.genfromtxt('src/targets.csv', delimiter="\n")
 
 # Read features of the test set to predict
-sectionFeatures = np.genfromtxt('features/test_section_features.csv', delimiter=",")
-p2x = np.genfromtxt('features/test_p2_x.csv', delimiter=",")
-p2y = np.genfromtxt('features/test_p2_y.csv', delimiter=",")
-p3x = np.genfromtxt('features/test_p3_x.csv', delimiter=",")
-p3y = np.genfromtxt('features/test_p3_y.csv', delimiter=",")
+sectionFeatures = np.genfromtxt('src/features/test_section_features.csv', delimiter=",")
+p2x = np.genfromtxt('src/features/test_p2_x.csv', delimiter=",")
+p2y = np.genfromtxt('src/features/test_p2_y.csv', delimiter=",")
+p3x = np.genfromtxt('src/features/test_p3_x.csv', delimiter=",")
+p3y = np.genfromtxt('src/features/test_p3_y.csv', delimiter=",")
 
 toPredictFeatures = np.concatenate([sectionFeatures,np.reshape(p2x,[-1,1]),np.reshape(p2y,[-1,1]),np.reshape(p3x,[-1,1]),np.reshape(p3y,[-1,1])],1)
 
@@ -53,7 +53,7 @@ print("Start Ridge regression with different alphas")
 predictedAges = ridgeRegression(alphas, features, age,True,toPredict=toPredictFeatures)['PredictedAges']
 
 # Write in a csv file
-result = open('prediction.csv','w')
+result = open('final_submission.csv','w')
 result.write("ID,Prediction"+"\n")
 for id in range(N_TEST):
     result.write(str(id+1)+","+str(predictedAges[id])+"\n")
