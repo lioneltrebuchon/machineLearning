@@ -1,0 +1,87 @@
+Sender: LSF System <lsfadmin@e2123>
+Subject: Job 32074351: <python SVM2.py 100 149> in cluster <euler> Exited
+
+Job <python SVM2.py 100 149> was submitted from host <euler07> by user <lionelt> in cluster <euler>.
+Job was executed on host(s) <e2123>, in queue <normal.24h>, as user <lionelt> in cluster <euler>.
+</cluster/home/lionelt> was used as the home directory.
+</cluster/home/lionelt/machineLearning/MLP2/preproc> was used as the working directory.
+Started at Wed Nov 16 13:27:56 2016
+Results reported on Wed Nov 16 13:27:57 2016
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python SVM2.py 100 149
+------------------------------------------------------------
+
+Exited with exit code 2.
+
+Resource usage summary:
+
+    CPU time :               0.03 sec.
+    Total Requested Memory : 8000.00 MB
+    Delta Memory :           -
+    (Delta: the difference between Total Requested Memory and Max Memory.)
+
+The output (if any) follows:
+
+python: can't open file 'SVM2.py': [Errno 2] No such file or directory
+Sender: LSF System <lsfadmin@e2028>
+Subject: Job 32074397: <python plot_peaks.py 100 149> in cluster <euler> Exited
+
+Job <python plot_peaks.py 100 149> was submitted from host <euler07> by user <lionelt> in cluster <euler>.
+Job was executed on host(s) <e2028>, in queue <normal.24h>, as user <lionelt> in cluster <euler>.
+</cluster/home/lionelt> was used as the home directory.
+</cluster/home/lionelt/machineLearning/MLP2/preproc> was used as the working directory.
+Started at Wed Nov 16 13:31:14 2016
+Results reported on Wed Nov 16 13:31:15 2016
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python plot_peaks.py 100 149
+------------------------------------------------------------
+
+Exited with exit code 2.
+
+Resource usage summary:
+
+    CPU time :               0.02 sec.
+    Total Requested Memory : 8000.00 MB
+    Delta Memory :           -
+    (Delta: the difference between Total Requested Memory and Max Memory.)
+
+The output (if any) follows:
+
+python: can't open file 'plot_peaks.py': [Errno 2] No such file or directory
+Sender: LSF System <lsfadmin@e1369>
+Subject: Job 32074425: <python plot_peaks.py 100 149> in cluster <euler> Exited
+
+Job <python plot_peaks.py 100 149> was submitted from host <euler07> by user <lionelt> in cluster <euler>.
+Job was executed on host(s) <e1369>, in queue <normal.24h>, as user <lionelt> in cluster <euler>.
+</cluster/home/lionelt> was used as the home directory.
+</cluster/home/lionelt/machineLearning/MLP2/preproc> was used as the working directory.
+Started at Wed Nov 16 13:35:43 2016
+Results reported on Wed Nov 16 13:35:44 2016
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python plot_peaks.py 100 149
+------------------------------------------------------------
+
+Exited with exit code 2.
+
+Resource usage summary:
+
+    CPU time :               0.05 sec.
+    Total Requested Memory : 8000.00 MB
+    Delta Memory :           -
+    (Delta: the difference between Total Requested Memory and Max Memory.)
+
+The output (if any) follows:
+
+python: can't open file 'plot_peaks.py': [Errno 2] No such file or directory
