@@ -1,0 +1,23 @@
+or filename in os.listdir("."):
+...  if filename.startswith("cheese_"):
+...    os.rename(filename, filename[7:])
+
+import numpy as np
+import nibabel as nib
+import matplotlib as mpl
+mpl.use('Agg')
+import matplotlib.pyplot as plt
+
+#import sklearn as sk
+#from sklearn.linear_model import Lasso
+
+import os, sys
+
+
+
+
+dans le folder
+for i in 1:278
+rename image i
+    new name = previous + gender
+next i
