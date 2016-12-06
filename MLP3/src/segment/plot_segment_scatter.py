@@ -5,7 +5,7 @@
 ########################################################################
 
 #''' (remove/add # to switch)
-TRAIN=278
+TRAIN=269
 X = 176
 Y = 208
 Z = 176
@@ -32,10 +32,24 @@ colors1 = ['blue' if g==0 else 'red' for g in genders[0:TRAIN]]
 ages = np.genfromtxt('correct_ages.csv', delimiter="\n")
 healths = np.genfromtxt('correct_healths.csv', delimiter="\n")
 ages_healths = 1+np.add(ages,healths) # = 1 if old sick, 2 if old healthy, 3 if young (because young=>healthy)
-areas = [np.pi*(3*a_h)**2 for a_h in ages_healths[0:TRAIN]]
+#areas = [np.pi*(3*a_h)**2 for a_h in ages_healths[0:TRAIN]]
 colors2 = ['green' if a_h==3 else 'red' for a_h in ages_healths]
 volumes = np.genfromtxt('correct_volumes.csv', delimiter="\n")
+oldVolumes = [volumes[i] for i in xrange(TRAIN) if ages[i]==0]
+youngVolumes = [volumes[i] for i in xrange(TRAIN) if ages[i]==1]
+oldMeanVolume = np.mean(oldVolumes)
+youngMeanVolume = np.mean(youngVolumes)
 frontiers = np.genfromtxt('correct_frontiers.csv', delimiter="\n")
+oldFrontiers = [frontiers[i] for i in xrange(TRAIN) if ages[i]==0]
+youngFrontiers = [frontiers[i] for i in xrange(TRAIN) if ages[i]==1]
+oldMeanFrontiers = np.mean(oldFrontiers)
+youngMeanFrontiers = np.mean(youngFrontiers)
+
+volumes = np.concatenate((volumes, [oldMeanVolume, youngMeanVolume]))
+frontiers = np.concatenate((frontiers, [oldMeanFrontiers, youngMeanFrontiers]))
+colors2 = np.concatenate((colors2, ["red", "green"]))
+areas = np.concatenate((30*np.ones(TRAIN),[200,200]))
+
 '''
 for i in xrange(249,TRAIN):
     print("Computing features of train "+str(i+1)+"...\n")
@@ -83,5 +97,5 @@ plt.scatter(volumes, frontiers, c=colors1, alpha=0.5)
 plt.show()
 
 plt.figure(2)
-plt.scatter(volumes, frontiers, c=colors2, alpha=0.5)
+plt.scatter(volumes, frontiers, c=colors2, s=areas, alpha=0.5)
 plt.show()
