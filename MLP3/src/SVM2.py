@@ -14,31 +14,24 @@ import matplotlib.pyplot as plt
 import sklearn as sk
 from sklearn import svm
 
-'''
-# Input (features and targets) of the regression
-feature1 = np.genfromtxt('../features/train_p2_x.csv', delimiter="\n")
-feature2 = np.genfromtxt('../features/train_p3_x.csv', delimiter="\n")
-feature3 = np.genfromtxt('../features/train_p2_y.csv', delimiter="\n")
-feature4 = np.genfromtxt('../features/train_p3_y.csv', delimiter="\n")
-features = np.transpose(np.array([feature1, feature2, feature3, feature4]))
-targets = np.genfromtxt('../data/targets.csv', delimiter="\n").astype(int)
+# Input (features and target) of the regression
+p2x = np.genfromtxt('../features/train_p2_x.csv', delimiter=",")
+p2y = np.genfromtxt('../features/train_p2_y.csv', delimiter=",")
+p3x = np.genfromtxt('../features/train_p3_x.csv', delimiter=",")
+p3y = np.genfromtxt('../features/train_p3_y.csv', delimiter=",")
+sectionFeatures = np.genfromtxt('../features/train_section_features.csv', delimiter=",")
+features = np.concatenate([np.reshape(p2x,[-1,1]),np.reshape(p2y,[-1,1]),np.reshape(p3x,[-1,1]),np.reshape(p3y,[-1,1]),sectionFeatures],1)
+
+target = np.genfromtxt('../data/targets.csv', delimiter=",")
 
 # Features for the prediction
-toPredictFeatures1 = np.genfromtxt('../features/test_p2_x.csv', delimiter="\n")
-toPredictFeatures2 = np.genfromtxt('../features/test_p3_x.csv', delimiter="\n")
-toPredictFeatures3 = np.genfromtxt('../features/test_p2_y.csv', delimiter="\n")
-toPredictFeatures4 = np.genfromtxt('../features/test_p3_y.csv', delimiter="\n")
-toPredictFeatures = np.transpose(np.array([toPredictFeatures1, toPredictFeatures2, toPredictFeatures3, toPredictFeatures4]))
-'''
-
-features = np.genfromtxt('../features/train_section_features.csv', delimiter=",")
-targets = np.genfromtxt('../data/targets.csv', delimiter="\n").astype(int)
-#features = np.genfromtxt('../features/filtered_train_section_features.csv', delimiter=",")
-#targets = np.genfromtxt('../data/filtered_targets.csv', delimiter="\n").astype(int)
-toPredictFeatures = np.genfromtxt('../features/test_section_features.csv', delimiter=",")
-
-#print(features.shape)
-#print(toPredictFeatures.shape)
+# Read features of the test set to predict
+p2x = np.genfromtxt('../features/test_p2_x.csv', delimiter=",")
+p2y = np.genfromtxt('../features/test_p2_y.csv', delimiter=",")
+p3x = np.genfromtxt('../features/test_p3_x.csv', delimiter=",")
+p3y = np.genfromtxt('../features/test_p3_y.csv', delimiter=",")
+sectionFeatures = np.genfromtxt('../features/test_section_features.csv', delimiter=",")
+toPredictFeatures = np.concatenate([np.reshape(p2x,[-1,1]),np.reshape(p2y,[-1,1]),np.reshape(p3x,[-1,1]),np.reshape(p3y,[-1,1]),sectionFeatures],1)
 
 def svmclassification(features, targets, C=1, kernel='rbf', degree=3, gamma='auto', decision_function_shape=None, prediction=False, toPredict=np.empty(1, dtype=int)):
     # More info at:
@@ -78,13 +71,15 @@ def svmclassification(features, targets, C=1, kernel='rbf', degree=3, gamma='aut
     # Prediction
     if prediction==True:
         predictionOutput = (modelSVM.predict(toPredict))
-        return {'SV': modelSVM.support_vectors_, 'SV indices': modelSVM.support_, 'SV repartition': modelSVM.n_support_, 'SV coefficients': modelSVM.dual_coef_, 'Intercept': modelSVM.intercept_, 'Score': scoreFinal, 'PredictedClass': predictionOutput}
+        return {'SV': modelSVM.support_vectors_, 'SV indices': modelSVM.support_, 'SV repartition': modelSVM.n_support_, 'SV coefficients': modelSVM.dual_coef_, 'Intercept': modelSVM.intercept_, 'Score': scoreFinal, 'Predicted': predictionOutput}
     else:
         return {'SV': modelSVM.support_vectors_, 'SV indices': modelSVM.support_, 'SV repartition': modelSVM.n_support_, 'SV coefficients': modelSVM.dual_coef_, 'Intercept': modelSVM.intercept_, 'Score': scoreFinal}
 
 # compute the regression for several C
+#c = [0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000]
 #c = np.linspace(0.00000000001,0.0000001,10001)
-#c = 0.000001
+#c = [0.000001]
+
 kernel='linear'
 
 '''
@@ -101,23 +96,41 @@ for n in range(-5, 5):
     c = 10**n
     print("Start SVM classification with C = "+str(c))
     prediction = True
-    #results = svmclassification(features, targets, C=c, kernel=kernel, degree=3, gamma='auto', decision_function_shape=None, prediction=False, toPredict=np.empty(1, dtype=int))
-    results = svmclassification(features, targets, C=c, kernel=kernel, degree=2, gamma='auto', decision_function_shape=None, prediction=True, toPredict=toPredictFeatures)
+    #results = svmclassification(features, targets, C=c, kernel=kernel, degree=2, gamma='auto', decision_function_shape=None, prediction=False, toPredict=np.empty(1, dtype=int))
+    results = svmclassification(features, targets=target, C=c, kernel=kernel, degree=2, gamma='auto', decision_function_shape=None, prediction=True, toPredict=toPredictFeatures)
 
-    #print(results['PredictedClass'].shape)
-    print(results['PredictedClass'])
+    print(results['Predicted'].shape)
+    print(results['Predicted'])
+    predicted = results['Predicted']
+    print(predicted)
+    print(predicted.shape)
+    print(predicted[1][1])
+    print(predicted[0][0])
+    print(predicted[1,1])
+'''
+    # write in a csv file
+    if prediction==True:
+            predicted = results['Predicted']
+            result = open('../results/SVM'+kernel+str(c)+'.csv','w')
+            result.write("ID,Sample,Label,Predicted"+"\n")
 
-if prediction==True:
-	testIs2or3 = np.genfromtxt('../data/testIs2or3.csv', delimiter="\n")
-        PredictedClass = results['PredictedClass']
-        result = open('../results/prediction'+kernel+str(c)+'.csv','w')
-        result.write("ID,Prediction"+"\n")
-        for id in range(TEST):
-		'''		
-		if testIs2or3[id]==2:
-			result.write(str(id+1)+","+str(1)+"\n")
-		else:
-        		result.write(str(id+1)+","+str(PredictedClass[id])+"\n")
-		'''		
-		result.write(str(id+1)+","+str(PredictedClass[id])+"\n")
-        result.close()
+        for id in range(TEST*3):
+                if id%3==0:
+                    result.write(str(id)+","+str(id/3)+",gender,"+predicted[id/3][0]+"\n")
+                elif id%3==1:
+                    result.write(str(id)+","+str(id/3)+",age,"+predictedRounded[id/3][1]+"\n")
+                elif id%3==2:
+                    result.write(str(id)+","+str(id/3)+",health,"+predictedRounded[id/3][2]+"\n")
+                else:
+                    print("Error during prediction for id: "+str(id))
+                    result.write("ERROR,ERROR,ERROR,ERROR"+"\n")
+            result.close()
+
+
+
+            for id in range(TEST):
+                result.write(str(id+1)+","+str(predicted[id])+"\n")
+	
+		    result.write(str(id+1)+","+str(predicted[id])+"\n")
+            result.close()
+'''
