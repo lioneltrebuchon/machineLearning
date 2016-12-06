@@ -11,7 +11,7 @@ Y = 208
 Z = 176
 
 z = 100 #which slice ?
-seuil=1000 #default if detect peacts doesn't work
+threshold=1000 #default if detect peacts doesn't work
 
 
 import numpy as np
@@ -23,27 +23,33 @@ from sklearn import svm
 from scipy import ndimage
 from detect_peaks import detect_peaks
 
-image = nib.load("../data/set_train/train_1.nii")
+image = nib.load("../data/set_train/train_17.nii")
 data = image.get_data()
-slice = data[:,:,z,0]
+slice = data[:,:,:,0]
 #slice = ndimage.gaussian_filter(slice, sigma=3)
 
 list=[]
 for x in range(X):
-            for y in range(Y):
-                if slice[x,y]!=0:
-                    list.append(int(slice[x,y]))
+    for y in range(Y):
+        for z in range(Z):
+                if slice[x,y,z]!=0 and slice[x,y,z]<1500:
+                    list.append(int(slice[x,y,z]))
 
-hist=plt.hist(list, 100)
-peakIndexes=detect_peaks(hist[0], mpd = 30, valley=True, show=False)
+hist=plt.hist(list, 200)
+valleyIndexes=detect_peaks(hist[0], mpd = 30, valley=True, show=True)
+peakIndexes=detect_peaks(hist[0], mph = 1000, mpd = 30, valley=False, show=True)
 if len(peakIndexes)==3: #the first peak doesn't exist each time
-    seuil = hist[1][peakIndexes[1]]
-else:
-    print("Error: number of valleys different from 3\n")
-print("seuil = "+str(seuil)+"\n")
+    for v in valleyIndexes:
+        if v > peakIndexes[1] and v < peakIndexes[2]:
+            threshold = hist[1][v]
+            print("threshold = "+str(threshold)+"\n")
+elif len(peakIndexes)==2: #the first peak doesn't exist each time
+    for v in valleyIndexes:
+        if v > peakIndexes[0] and v < peakIndexes[1]:
+            threshold = hist[1][v]
+            print("threshold = "+str(threshold)+"\n")
 
-
-whiteMask = (slice > seuil)
+whiteMask = (slice > threshold)
 
 surface = np.sum(whiteMask)
 print("surface = "+str(surface)+"\n")
@@ -51,10 +57,10 @@ print("surface = "+str(surface)+"\n")
 perimeter = np.sum(whiteMask[:,1:] != whiteMask[:,:-1]) + np.sum(whiteMask[1:,:] != whiteMask[:-1,:])
 print("perimeter = "+str(perimeter)+"\n")
 
-whiteMatter = (slice > seuil)*slice
-grayMatter = (slice < seuil)*(slice > 0)*slice
+whiteMatter = (slice > threshold)*slice
+grayMatter = (slice < threshold)*(slice > 0)*slice
 
-bothMatters = (slice > seuil)*slice+(slice < seuil)*(slice > 0)*(-slice)
+bothMatters = (slice > threshold)*slice+(slice < threshold)*(slice > 0)*(-slice)
 
 colormap = mpl.colors.LinearSegmentedColormap.from_list('my_colormap',['black','white'],256)
 doublemap = mpl.colors.LinearSegmentedColormap.from_list('my_colormap',['red','black','blue'],256)
