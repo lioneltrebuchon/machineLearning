@@ -15,7 +15,7 @@ import sklearn as sk
 from sklearn import linear_model
 
 
-# Input (features and "age" (diseased or nor)) of the regression
+# Input (features and target) of the regression
 p2x = np.genfromtxt('../features/train_p2_x.csv', delimiter=",")
 p2y = np.genfromtxt('../features/train_p2_y.csv', delimiter=",")
 p3x = np.genfromtxt('../features/train_p3_x.csv', delimiter=",")
@@ -23,7 +23,7 @@ p3y = np.genfromtxt('../features/train_p3_y.csv', delimiter=",")
 sectionFeatures = np.genfromtxt('../features/train_section_features.csv', delimiter=",")
 features = np.concatenate([np.reshape(p2x,[-1,1]),np.reshape(p2y,[-1,1]),np.reshape(p3x,[-1,1]),np.reshape(p3y,[-1,1]),sectionFeatures],1)
 
-age = np.genfromtxt('../data/targets.csv', delimiter=",")
+target = np.genfromtxt('../data/targets.csv', delimiter=",")
 
 # Features for the prediction
 # Read features of the test set to predict
@@ -34,7 +34,7 @@ p3y = np.genfromtxt('../features/test_p3_y.csv', delimiter=",")
 sectionFeatures = np.genfromtxt('../features/test_section_features.csv', delimiter=",")
 toPredictFeatures = np.concatenate([np.reshape(p2x,[-1,1]),np.reshape(p2y,[-1,1]),np.reshape(p3x,[-1,1]),np.reshape(p3y,[-1,1]),sectionFeatures],1)
 
-def ridgeRegression(alphas, features, age, prediction=False, toPredict=np.empty(1, dtype=int)):
+def ridgeRegression(alphas, features, target, prediction=False, toPredict=np.empty(1, dtype=int)):
     # More info at :
     # http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.RidgeCV.html
 
@@ -43,10 +43,10 @@ def ridgeRegression(alphas, features, age, prediction=False, toPredict=np.empty(
     modelRidge = linear_model.RidgeCV(alphas, normalize=True, cv=None)
 
     # We compute the model
-    result = modelRidge.fit(features, age)
+    result = modelRidge.fit(features, target)
 
     # We compute the score
-    scoreFinal = modelRidge.score(features, age)
+    scoreFinal = modelRidge.score(features, target)
 
     #print("Coefficient: {0} Alpha: {1} Score: {2} Intercept: {3}".format(modelRidge.coef_, modelRidge.alpha_, scoreFinal, modelRidge.intercept_))
 
@@ -65,7 +65,7 @@ alphas = np.linspace(0.2, 0.6, 20)
 for alpha in alphas:
     #coefficient, alpha, score, intercept, predicted
     print("Start Ridge regression with different alphas "+str(alpha))
-    results = ridgeRegression([alpha], features, age, True, toPredict=toPredictFeatures)
+    results = ridgeRegression([alpha], features, target, True, toPredict=toPredictFeatures)
     predicted = results['Predicted']
 
     predictedRounded = [[0 for i in xrange(3)] for i in xrange(TEST)]
