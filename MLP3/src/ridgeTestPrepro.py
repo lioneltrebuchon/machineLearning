@@ -59,15 +59,16 @@ def ridgeRegression(alphas, features, age, prediction=False, toPredict=np.empty(
 
 # compute the regression for several alphas
 #alphas = [0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000]
-#alphas = np.linspace(5, 7, 20)
-alphas = [6]
-predictedRounded = [[0 for i in xrange(3)] for i in xrange(TEST)]
+alphas = np.linspace(0.2, 0.6, 20)
+#alphas = [6]
 
 for alpha in alphas:
     #coefficient, alpha, score, intercept, predicted
     print("Start Ridge regression with different alphas "+str(alpha))
     results = ridgeRegression([alpha], features, age, True, toPredict=toPredictFeatures)
     predicted = results['Predicted']
+
+    predictedRounded = [[0 for i in xrange(3)] for i in xrange(TEST)]
 
     # Round up predictions
     for id in range(TEST):
