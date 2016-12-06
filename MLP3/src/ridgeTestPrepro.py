@@ -73,21 +73,21 @@ for alpha in alphas:
     for id in range(TEST):
         predictedRounded[id][0] = round(predicted[id][0])
         if predictedRounded[id][0]<=0:
-            predictedRounded[id][0] = 'TRUE'
-        else:
             predictedRounded[id][0] = 'FALSE'
+        else:
+            predictedRounded[id][0] = 'TRUE'
 
         predictedRounded[id][1] = round(predicted[id][1])
         if predictedRounded[id][1]<=0:
-            predictedRounded[id][1] = 'TRUE'
-        else:
             predictedRounded[id][1] = 'FALSE'
+        else:
+            predictedRounded[id][1] = 'TRUE'
 
         predictedRounded[id][2] = round(predicted[id][2])
         if predictedRounded[id][2]<=0:
-            predictedRounded[id][2] = 'TRUE'
-        else:
             predictedRounded[id][2] = 'FALSE'
+        else:
+            predictedRounded[id][2] = 'TRUE'
     
     # write in a csv file
     result = open('../results/ridgeTestPrepro'+str(alpha)+'.csv','w')
@@ -95,14 +95,14 @@ for alpha in alphas:
     testIs2or3 = np.genfromtxt('../data/testIs2or3.csv', delimiter="\n")
     for id in range(TEST*3):
         if id%3==0:
-            result.write(str(id)+","+str(id/3)+","+"gender,"+predictedRounded[id/3][0]+"\n")
+            result.write(str(id)+","+str(id/3)+",gender,"+predictedRounded[id/3][0]+"\n")
         elif id%3==1:
-            result.write(str(id)+","+str(id/3)+","+"age,"+predictedRounded[id/3][1]+"\n")
+            result.write(str(id)+","+str(id/3)+",age,"+predictedRounded[id/3][1]+"\n")
         elif id%3==2:
             if testIs2or3[id/3]==2:
-                result.write(str(id)+","+str(id/3)+","+"health,TRUE"+"\n")
+                result.write(str(id)+","+str(id/3)+",health,TRUE"+"\n")
             else:
-                result.write(str(id)+","+str(id/3)+","+"health,"+predictedRounded[id/3][2]+"\n")
+                result.write(str(id)+","+str(id/3)+",health,"+predictedRounded[id/3][2]+"\n")
         else:
             print("Error during prediction for id: "+str(id))
             result.write("ERROR,ERROR,ERROR,ERROR"+"\n")
