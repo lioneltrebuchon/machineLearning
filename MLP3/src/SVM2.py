@@ -22,7 +22,7 @@ p3y = np.genfromtxt('../features/train_p3_y.csv', delimiter=",")
 sectionFeatures = np.genfromtxt('../features/train_section_features.csv', delimiter=",")
 features = np.concatenate([np.reshape(p2x,[-1,1]),np.reshape(p2y,[-1,1]),np.reshape(p3x,[-1,1]),np.reshape(p3y,[-1,1]),sectionFeatures],1)
 
-target = np.genfromtxt('../data/targets.csv', delimiter=",")
+target = np.genfromtxt('../data/targetsSVM.csv', delimiter=",")
 
 # Features for the prediction
 # Read features of the test set to predict
@@ -79,58 +79,93 @@ def svmclassification(features, targets, C=1, kernel='rbf', degree=3, gamma='aut
 #c = [0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000]
 #c = np.linspace(0.00000000001,0.0000001,10001)
 #c = [0.000001]
-
 kernel='linear'
-
-'''
-print(features.shape)
-print(targets.shape)
-print(toPredictFeatures.shape)
-print(c)
-print(features)
-print(targets)
-print(toPredictFeatures)
-'''
 
 for n in range(-5, 5):
     c = 10**n
     print("Start SVM classification with C = "+str(c))
+
+    '''
+    print(features.shape)
+    print(target.shape)
+    print(toPredictFeatures.shape)
+    print(features)
+    print(target)
+    print(c)
+    print(kernel)
+    print(toPredictFeatures)
+    '''
+
     prediction = True
     #results = svmclassification(features, targets, C=c, kernel=kernel, degree=2, gamma='auto', decision_function_shape=None, prediction=False, toPredict=np.empty(1, dtype=int))
-    results = svmclassification(features, targets=target, C=c, kernel=kernel, degree=2, gamma='auto', decision_function_shape=None, prediction=True, toPredict=toPredictFeatures)
-
+    results = svmclassification(features, targets=target, C=c, kernel=kernel, degree=3, gamma='auto', decision_function_shape=None, prediction=True, toPredict=toPredictFeatures)
+    
+    '''
     print(results['Predicted'].shape)
     print(results['Predicted'])
     predicted = results['Predicted']
+    print("lol")
     print(predicted)
     print(predicted.shape)
-    print(predicted[1][1])
-    print(predicted[0][0])
-    print(predicted[1,1])
-'''
+    '''
+
     # write in a csv file
     if prediction==True:
-            predicted = results['Predicted']
-            result = open('../results/SVM'+kernel+str(c)+'.csv','w')
-            result.write("ID,Sample,Label,Predicted"+"\n")
+        predicted = results['Predicted']
 
+        # Transform the 7 multi-classes in 3 binary subclasses
+        predictedTransf = [[0 for i in xrange(3)] for i in xrange(TEST)]
+        for id in range(TEST):
+            if predicted[id]==0:
+                predictedTransf[id][0] = 'FALSE'
+                predictedTransf[id][1] = 'FALSE'
+                predictedTransf[id][2] = 'FALSE'
+            elif predicted[id]==1:
+                predictedTransf[id][0] = 'FALSE'
+                predictedTransf[id][1] = 'FALSE'
+                predictedTransf[id][2] = 'TRUE'
+            elif predicted[id]==2:
+                predictedTransf[id][0] = 'FALSE'
+                predictedTransf[id][1] = 'TRUE'
+                predictedTransf[id][2] = 'FALSE'
+            elif predicted[id]==3:
+                predictedTransf[id][0] = 'FALSE'
+                predictedTransf[id][1] = 'TRUE'
+                predictedTransf[id][2] = 'TRUE'
+            elif predicted[id]==4:
+                predictedTransf[id][0] = 'TRUE'
+                predictedTransf[id][1] = 'FALSE'
+                predictedTransf[id][2] = 'FALSE'
+            elif predicted[id]==5:
+                predictedTransf[id][0] = 'TRUE'
+                predictedTransf[id][1] = 'FALSE'
+                predictedTransf[id][2] = 'TRUE'
+            elif predicted[id]==6:
+                predictedTransf[id][0] = 'TRUE'
+                predictedTransf[id][1] = 'TRUE'
+                predictedTransf[id][2] = 'FALSE'
+            elif predicted[id]==7:
+                predictedTransf[id][0] = 'TRUE'
+                predictedTransf[id][1] = 'TRUE'
+                predictedTransf[id][2] = 'TRUE'
+            else:
+                predictedTransf[id][0] = 'ERROR'
+                predictedTransf[id][1] = 'ERROR'
+                predictedTransf[id][2] = 'ERROR'
+                print("ERROR for id: "+str(id))
+
+        # write in a csv file
+        result = open('../results/SVM'+kernel+str(c)+'.csv','w')
+        result.write("ID,Sample,Label,Predicted"+"\n")
         for id in range(TEST*3):
                 if id%3==0:
-                    result.write(str(id)+","+str(id/3)+",gender,"+predicted[id/3][0]+"\n")
+                    result.write(str(id)+","+str(id/3)+",gender,"+predictedTransf[id/3][0]+"\n")
                 elif id%3==1:
-                    result.write(str(id)+","+str(id/3)+",age,"+predictedRounded[id/3][1]+"\n")
+                    result.write(str(id)+","+str(id/3)+",age,"+predictedTransf[id/3][1]+"\n")
                 elif id%3==2:
-                    result.write(str(id)+","+str(id/3)+",health,"+predictedRounded[id/3][2]+"\n")
+                    result.write(str(id)+","+str(id/3)+",health,"+predictedTransf[id/3][2]+"\n")
                 else:
                     print("Error during prediction for id: "+str(id))
                     result.write("ERROR,ERROR,ERROR,ERROR"+"\n")
-            result.close()
+        result.close()
 
-
-
-            for id in range(TEST):
-                result.write(str(id+1)+","+str(predicted[id])+"\n")
-	
-		    result.write(str(id+1)+","+str(predicted[id])+"\n")
-            result.close()
-'''
