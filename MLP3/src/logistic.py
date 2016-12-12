@@ -61,7 +61,7 @@ def logisticRegression(features, targets, C=0.1, prediction=False, toPredict=np.
     # We compute the score
     scoreFinal = modelLogistic.score(features, targets)
 
-    print("Coefficient: {0} C: {1} Score: {2} Intercept: {3}".format(modelLogistic.coef_, C, scoreFinal, modelLogistic.intercept_))
+    print("Score: {0} C: {1}".format(scoreFinal, C))
 
     # Prediction
     if prediction==True:
@@ -72,8 +72,8 @@ def logisticRegression(features, targets, C=0.1, prediction=False, toPredict=np.
         return {'Coefficient': modelLogistic.coef_, 'C': C, 'Score': scoreFinal, 'Intercept': modelLogistic.intercept_}
 
 #crange = [0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000]
-#crange = np.linspace(1, 10, 10)
-crange = [6]
+crange = np.linspace(0.00005, 0.0005, 11)
+#crange = [6]
 
 for c in crange:
     print("Start Logistic regression with different C: "+str(c))
