@@ -98,7 +98,7 @@ def ridgeRegression(alphas, features, targets, prediction=False, toPredict=np.em
         return {'Coefficient': modelRidge.coef_, 'Alpha': modelRidge.alpha_, 'Score': scoreFinal, 'Intercept': modelRidge.intercept_}
 
 
-### Set parameters for SVM and Ridge.
+### Set parameters for SVM and Ridge. ###
 alphas = 0.5  # ridge
 clist = 0.001 # SVM
 kernel='linear'
@@ -110,23 +110,21 @@ print("Start SVM (C= "+str(c)+", kernel: "+kernel+") and ridge classification (a
 resultsSVM = svmclassification(features, targets=targetSVM, C=c, kernel=kernel, degree=2, gamma='auto', decision_function_shape=None, prediction=True, toPredict=toPredictFeatures)
 resultsRidge = ridgeRegression(alphas=[alpha], features=features, targets=targetRidge, prediction=True, toPredict=toPredictFeatures)
 
-# We normalize Ridge
+### Transform ridge and SVM so that they can be weighted and summed ###
+
+#Ridge
+
 probaRidge = resultsRidge['Predicted']
-probaRidge = preprocessing.scale(probaRidge)
+print("Ridge normalized first line:  "+str(probaRidge[0,:]))
+probaRidge = preprocessing.scale(probaRidge) #normalize  TODO NOT WORKING
+print("Ridge normalized first line:  "+str(probaRidge[0,:]))
+
+#SVM
 
 probaSVM = resultsSVM['Probabilities']
-
-#### NOT WORKING TO DO
-
 # We need to add the missing classes 2 and 6
-#probaSVMFull = [[0 for i in xrange(3)] for i in xrange(TEST)]
-#probaSVMFull = np.insert(probaSVM, [1], np.reshape(np.empty([TEST,]),[-1,1]))
-probaSVMFull = np.insert(probaSVM, [2,], np.empty([TEST,]))
-
-print(probaSVMFull)
-print(probaSVMFull.shape)
-
-#### END TO DO
+probaSVMFull = np.insert(probaSVM, 1, 0, axis =1)
+probaSVMFull = np.insert(probaSVMFull, 5, 0, axis =1)
 
 # We transform the class probabilities of SVM for 8 classes into a subset of 3 classes thanks to the transformation matrix matrixOfTransformation
 column1 =  np.transpose(np.array([1, 1, 1, 1, 0, 0, 0, 0]))
@@ -135,18 +133,15 @@ column3 =  np.transpose(np.array([1, 0, 1, 0, 1, 0, 1, 0]))
 matrixOfTransformation =  [[0 for i in xrange(3)] for i in xrange(8)]
 matrixOfTransformation = np.concatenate([np.reshape(column1,[-1,1]),np.reshape(column2,[-1,1]),np.reshape(column3,[-1,1])],1)
 
-#### A CHECK
-
 probaSVMTransformed =  [[0 for i in xrange(3)] for i in xrange(TEST)]
-probaSVMTransformed = np.dot(probaSVM, matrixOfTransformation)
+probaSVMTransformed = np.dot(probaSVMFull, matrixOfTransformation)
+print("SVM first line:  "+str(probaSVMTransformed[0,:]))
 
-print(probaSVMTransformed.shape)
+### Weighted sum of ridge and SVM ###
 
 weightedProba = [[0 for i in xrange(3)] for i in xrange(TEST)]
 weightedProba = 0.5*probaSVMTransformed + 0.5*probaRidge
-
-#### END A CHECK
-
+print("Final weighted first line:  "+str(weightedProba[0,:]))
 weightedProbaRounded = [[0 for i in xrange(3)] for i in xrange(TEST)]
 
 # Round up predictions
@@ -168,7 +163,7 @@ for id in range(TEST):
         weightedProbaRounded[id][2] = 'FALSE'
     else:
         weightedProbaRounded[id][2] = 'TRUE'
-    
+
 # write in a csv file
 result = open('../results/ridgeSVM'+str(c)+str(alpha)+'.csv','w')
 result.write("ID,Sample,Label,Predicted"+"\n")
