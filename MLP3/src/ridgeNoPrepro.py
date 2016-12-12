@@ -68,6 +68,8 @@ for alpha in alphas:
     results = ridgeRegression([alpha], features, target, True, toPredict=toPredictFeatures)
     predicted = results['Predicted']
 
+    print(predicted)
+
     predictedRounded = [[0 for i in xrange(3)] for i in xrange(TEST)]
 
     # Round up predictions
