@@ -52,7 +52,7 @@ def svmclassification(features, targets, C=1, kernel='rbf', degree=3, gamma='aut
     # http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html#sklearn.svm.SVC
 
     # We set up the model
-    modelSVM = svm.SVC(C=C, kernel=kernel, degree=degree, gamma=gamma, decision_function_shape=decision_function_shape)
+    modelSVM = svm.SVC(C=C, kernel=kernel, degree=degree, gamma=gamma, decision_function_shape=decision_function_shape, probability=True)
 
     # We compute the model
     modelSVM.fit(features, targets)
@@ -70,8 +70,9 @@ def svmclassification(features, targets, C=1, kernel='rbf', degree=3, gamma='aut
 
     # Prediction
     if prediction==True:
-        predictionOutput = (modelSVM.predict(toPredict))
-        return {'SV': modelSVM.support_vectors_, 'SV indices': modelSVM.support_, 'SV repartition': modelSVM.n_support_, 'Coefficients': modelSVM.coef_, 'Intercept': modelSVM.intercept_, 'Score': scoreFinal, 'Predicted': predictionOutput}
+        predictionOutput = modelSVM.predict(toPredict)
+        prob = modelSVM.predict_proba(toPredict)
+        return {'SV': modelSVM.support_vectors_, 'SV indices': modelSVM.support_, 'SV repartition': modelSVM.n_support_, 'Coefficients': modelSVM.coef_, 'Intercept': modelSVM.intercept_, 'Score': scoreFinal, 'Predicted': predictionOutput, 'Probabilities': prob}
     else:
         return {'SV': modelSVM.support_vectors_, 'SV indices': modelSVM.support_, 'SV repartition': modelSVM.n_support_, 'Coefficients': modelSVM.coef_, 'Intercept': modelSVM.intercept_, 'Score': scoreFinal}
 
@@ -92,6 +93,7 @@ for c in clist:
     # write in a csv file
     if prediction==True:
         predicted = results['Predicted']
+        probab = results['Probabilities']
 
         # Transform the 7 multi-classes in 3 binary subclasses
         predictedTransf = [[0 for i in xrange(3)] for i in xrange(TEST)]

@@ -52,11 +52,11 @@ sectionFeatures = preprocessing.scale(sectionFeatures)
 
 toPredictFeatures = np.concatenate([np.reshape(p2x,[-1,1]),np.reshape(p2y,[-1,1]),np.reshape(p3x,[-1,1]),np.reshape(p3y,[-1,1]),sectionFeatures],1)
 
-def svmclassification(features, targets, C=1, kernel='rbf', degree=3, gamma='auto', decision_function_shape=None, prediction=False, toPredict=np.empty(1, dtype=int), probability=False):
+def svmclassification(features, targets, C=1, kernel='rbf', degree=3, gamma='auto', decision_function_shape=None, prediction=False, toPredict=np.empty(1, dtype=int)):
     # http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html#sklearn.svm.SVC
 
     # We set up the model
-    modelSVM = svm.SVC(C=C, kernel=kernel, degree=degree, gamma=gamma, decision_function_shape=decision_function_shape)
+    modelSVM = svm.SVC(C=C, kernel=kernel, degree=degree, gamma=gamma, decision_function_shape=decision_function_shape, probability=True)
 
     # We compute the model
     modelSVM.fit(features, targets)
@@ -74,8 +74,9 @@ def svmclassification(features, targets, C=1, kernel='rbf', degree=3, gamma='aut
 
     # Prediction
     if prediction==True:
-        predictionOutput = (modelSVM.predict(toPredict))
-        return {'SV': modelSVM.support_vectors_, 'SV indices': modelSVM.support_, 'SV repartition': modelSVM.n_support_, 'Coefficients': modelSVM.coef_, 'Intercept': modelSVM.intercept_, 'Score': scoreFinal, 'Predicted': predictionOutput}
+        predictionOutput = modelSVM.predict(toPredict)
+        prob = modelSVM.predict_proba(toPredict)
+        return {'SV': modelSVM.support_vectors_, 'SV indices': modelSVM.support_, 'SV repartition': modelSVM.n_support_, 'Coefficients': modelSVM.coef_, 'Intercept': modelSVM.intercept_, 'Score': scoreFinal, 'Predicted': predictionOutput, 'Probabilities': prob}
     else:
         return {'SV': modelSVM.support_vectors_, 'SV indices': modelSVM.support_, 'SV repartition': modelSVM.n_support_, 'Coefficients': modelSVM.coef_, 'Intercept': modelSVM.intercept_, 'Score': scoreFinal}
 
@@ -105,11 +106,10 @@ for c in clist:
     predictedGender = resultsGender['Predicted']
     predictedAge = resultsAge['Predicted']
     predictedHealth = resultsHealth['Predicted']
+    probabGender = resultsGender['Probabilities']
+    probabAge = resultsAge['Probabilities']
+    probabHealth = resultsHealth['Probabilities']
     predictedTransf = [[0 for i in xrange(3)] for i in xrange(TEST)]
-
-    print(predictedGender)
-    print(predictedAge)
-    print(predictedHealth)
 
     for id in range(TEST):
         if predictedGender[id]==0:
