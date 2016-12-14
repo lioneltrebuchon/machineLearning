@@ -115,13 +115,18 @@ resultsRidge = ridgeRegression(alphas=[alpha], features=features, targets=target
 #Ridge
 
 probaRidge = resultsRidge['Predicted']
-print("Ridge normalized first line:  "+str(probaRidge[0,:]))
-probaRidge = preprocessing.scale(probaRidge) #normalize  TODO NOT WORKING
-print("Ridge normalized first line:  "+str(probaRidge[0,:]))
+print(probaRidge.shape[0])
+print("Ridge first line:  "+str(probaRidge[0,:]))
+probaRidge[probaRidge<0] = 0
+probaRidge[probaRidge>1] = 1
+# for i in range(probaRidge.shape[0]):
+# 	difference = max(probaRidge[i,:])-min(probaRidge[i,:])
+# 	probaRidge[i,:] = (probaRidge[i,:]-min(probaRidge[i,:])) / difference  # normalize
+# print("Ridge normalized first line:  "+str(probaRidge[0,:]))
 
 #SVM
 
-probaSVM = resultsSVM['Probabilities']
+probaSVM = 1-resultsSVM['Probabilities']
 # We need to add the missing classes 2 and 6
 probaSVMFull = np.insert(probaSVM, 1, 0, axis =1)
 probaSVMFull = np.insert(probaSVMFull, 5, 0, axis =1)
