@@ -67,7 +67,7 @@ def svmclassification(features, targets, C=1, kernel='rbf', degree=3, gamma='aut
     # Not very relevant as we compute a score over the training set.
     scoreFinal = modelSVM.score(features, targets)
 
-    print("SV repartition: {0} Score: {1}".format(modelSVM.n_support_, scoreFinal))
+    #print("SV repartition: {0} Score: {1}".format(modelSVM.n_support_, scoreFinal))
 
     # Prediction
     if prediction==True:
@@ -78,7 +78,7 @@ def svmclassification(features, targets, C=1, kernel='rbf', degree=3, gamma='aut
         return {'SV': modelSVM.support_vectors_, 'SV indices': modelSVM.support_, 'SV repartition': modelSVM.n_support_, 'Coefficients': modelSVM.coef_, 'Intercept': modelSVM.intercept_, 'Score': scoreFinal}
 
 
-### Ridge regression classification ###
+### Ridge regression ###
 def ridgeRegression(alphas, features, targets, prediction=False, toPredict=np.empty(1, dtype=int)):
     modelRidge = linear_model.RidgeCV(alphas, normalize=True, cv=None)
 
@@ -105,16 +105,53 @@ kernel='linear'
 c = clist
 alpha = alphas
 
-print("Start SVM (C= "+str(c)+", kernel: "+kernel+") and ridge classification (alpha= "+str(alpha)+")")
+print("Start SVM (C="+str(c)+", kernel:"+kernel+") and Ridge regression (alpha="+str(alpha)+")")
 
 resultsSVM = svmclassification(features, targets=targetSVM, C=c, kernel=kernel, degree=2, gamma='auto', decision_function_shape=None, prediction=True, toPredict=toPredictFeatures)
 resultsRidge = ridgeRegression(alphas=[alpha], features=features, targets=targetRidge, prediction=True, toPredict=toPredictFeatures)
 
 ### Transform ridge and SVM so that they can be weighted and summed ###
 
-#Ridge
-
 probaRidge = resultsRidge['Predicted']
+
+# We round up Ridge predictions probabilities
+probaRidgeTransformed = [[0 for i in xrange(3)] for i in xrange(TEST)]
+
+for id in range(TEST):
+
+    if probaRidge[id][0]<0:
+        probaRidgeTransformed[id][0] = 0
+    elif probaRidge[id][0]>1:
+        probaRidgeTransformed[id][0] = 1
+    else:
+        probaRidgeTransformed[id][0] = probaRidge[id][0]
+
+    if probaRidge[id][1]<0:
+        probaRidgeTransformed[id][1] = 0
+    elif probaRidge[id][1]>1:
+        probaRidgeTransformed[id][1] = 1
+    else:
+        probaRidgeTransformed[id][1] = probaRidge[id][1]
+
+    if probaRidge[id][2]<0:
+        probaRidgeTransformed[id][2] = 0
+    elif probaRidge[id][2]>1:
+        probaRidgeTransformed[id][2] = 1
+    else:
+        probaRidgeTransformed[id][2] = probaRidge[id][2]
+
+probaRidgeTransformed = np.array(probaRidgeTransformed)
+
+'''
+print(probaRidge)
+print(probaRidge.shape)
+print(probaRidgeTransformed)
+print(probaRidgeTransformed.shape)
+'''
+
+probaSVM = resultsSVM['Probabilities']
+
+'''
 print(probaRidge.shape[0])
 print("Ridge first line:  "+str(probaRidge[0,:]))
 probaRidge[probaRidge<0] = 0
@@ -123,10 +160,9 @@ probaRidge[probaRidge>1] = 1
 # 	difference = max(probaRidge[i,:])-min(probaRidge[i,:])
 # 	probaRidge[i,:] = (probaRidge[i,:]-min(probaRidge[i,:])) / difference  # normalize
 # print("Ridge normalized first line:  "+str(probaRidge[0,:]))
-
-#SVM
-
 probaSVM = 1-resultsSVM['Probabilities']
+'''
+
 # We need to add the missing classes 2 and 6
 probaSVMFull = np.insert(probaSVM, 1, 0, axis =1)
 probaSVMFull = np.insert(probaSVMFull, 5, 0, axis =1)
@@ -140,13 +176,34 @@ matrixOfTransformation = np.concatenate([np.reshape(column1,[-1,1]),np.reshape(c
 
 probaSVMTransformed =  [[0 for i in xrange(3)] for i in xrange(TEST)]
 probaSVMTransformed = np.dot(probaSVMFull, matrixOfTransformation)
-print("SVM first line:  "+str(probaSVMTransformed[0,:]))
+probaSVMTransformed = np.array(probaSVMTransformed)
+
+#print(probaSVMTransformed)
+#print(probaSVMTransformed.shape)
+
+'''
+# We check that the probabilities are correct: we compute the complementary probabilities and by summing, we should always obtain 1
+column12 =  np.transpose(np.array([0, 0, 0, 0, 1, 1, 1, 1]))
+column22 =  np.transpose(np.array([0, 0, 1, 1, 0, 0, 1, 1]))
+column32 =  np.transpose(np.array([0, 1, 0, 1, 0, 1, 0, 1]))
+matrixOfTransformation2 =  [[0 for i in xrange(3)] for i in xrange(8)]
+matrixOfTransformation2 = np.concatenate([np.reshape(column12,[-1,1]),np.reshape(column22,[-1,1]),np.reshape(column32,[-1,1])],1)
+
+probaSVMTransformed2 =  [[0 for i in xrange(3)] for i in xrange(TEST)]
+probaSVMTransformed2 = np.dot(probaSVMFull, matrixOfTransformation2)
+probaSVMTransformed2 = np.array(probaSVMTransformed2)
+
+test = np.array([[0 for i in xrange(3)] for i in xrange(TEST)])
+test = probaSVMTransformed + probaSVMTransformed2
+
+print(test)
+'''
 
 ### Weighted sum of ridge and SVM ###
 
-weightedProba = [[0 for i in xrange(3)] for i in xrange(TEST)]
-weightedProba = 0.5*probaSVMTransformed + 0.5*probaRidge
-print("Final weighted first line:  "+str(weightedProba[0,:]))
+weightedProba = np.array([[0 for i in xrange(3)] for i in xrange(TEST)])
+weightedProba = 0.5*probaSVMTransformed + 0.5*probaRidgeTransformed
+#print("Final weighted first line:  "+str(weightedProba[0,:]))
 weightedProbaRounded = [[0 for i in xrange(3)] for i in xrange(TEST)]
 
 # Round up predictions
@@ -170,15 +227,15 @@ for id in range(TEST):
         weightedProbaRounded[id][2] = 'TRUE'
 
 # write in a csv file
-result = open('../results/ridgeSVM'+str(c)+str(alpha)+'.csv','w')
+result = open('../results/ridgeSVMc'+str(c)+'alpha'+str(alpha)+'.csv','w')
 result.write("ID,Sample,Label,Predicted"+"\n")
 for id in range(TEST*3):
     if id%3==0:
-        result.write(str(id)+","+str(id/3)+",gender,"+weightedProbaRounded[id/3][0]+"\n")
+        result.write(str(id)+","+str(id/3)+",gender,"+weightedProbaRounded[id/3][0]+','+str(probaSVMTransformed[id/3][0])+','+str(probaRidge[id/3][0])+','+str(probaRidgeTransformed[id/3][0])+','+str(weightedProba[id/3][0])+"\n")
     elif id%3==1:
-        result.write(str(id)+","+str(id/3)+",age,"+weightedProbaRounded[id/3][1]+"\n")
+        result.write(str(id)+","+str(id/3)+",age,"+weightedProbaRounded[id/3][1]+','+str(probaSVMTransformed[id/3][1])+','+str(probaRidge[id/3][1])+','+str(probaRidgeTransformed[id/3][1])+','+str(weightedProba[id/3][1])+"\n")
     elif id%3==2:
-        result.write(str(id)+","+str(id/3)+",health,"+weightedProbaRounded[id/3][2]+"\n")
+        result.write(str(id)+","+str(id/3)+",health,"+weightedProbaRounded[id/3][2]+','+str(probaSVMTransformed[id/3][2])+','+str(probaRidge[id/3][2])+','+str(probaRidgeTransformed[id/3][2])+','+str(weightedProba[id/3][2])+"\n")
     else:
         print("Error during prediction for id: "+str(id))
         result.write("ERROR,ERROR,ERROR,ERROR"+"\n")
