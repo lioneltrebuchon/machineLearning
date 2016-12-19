@@ -20,8 +20,9 @@ p2x = np.genfromtxt('../features/train_p2_x.csv', delimiter=",")
 p2y = np.genfromtxt('../features/train_p2_y.csv', delimiter=",")
 p3x = np.genfromtxt('../features/train_p3_x.csv', delimiter=",")
 p3y = np.genfromtxt('../features/train_p3_y.csv', delimiter=",")
-sectionFeatures = np.genfromtxt('../features/train_section_features.csv', delimiter=",")
-features = np.concatenate([np.reshape(p2x,[-1,1]),np.reshape(p2y,[-1,1]),np.reshape(p3x,[-1,1]),np.reshape(p3y,[-1,1]),sectionFeatures],1)
+sectionFeatures = np.genfromtxt('../features/train_section_features_bis.csv', delimiter=",")
+segmentFeatures = np.genfromtxt('../features/train_segment_features.csv', delimiter=",")
+features = np.concatenate([sectionFeatures,segmentFeatures],1)
 
 target = np.genfromtxt('../data/targets.csv', delimiter=",")
 
@@ -31,8 +32,9 @@ p2x = np.genfromtxt('../features/test_p2_x.csv', delimiter=",")
 p2y = np.genfromtxt('../features/test_p2_y.csv', delimiter=",")
 p3x = np.genfromtxt('../features/test_p3_x.csv', delimiter=",")
 p3y = np.genfromtxt('../features/test_p3_y.csv', delimiter=",")
-sectionFeatures = np.genfromtxt('../features/test_section_features.csv', delimiter=",")
-toPredictFeatures = np.concatenate([np.reshape(p2x,[-1,1]),np.reshape(p2y,[-1,1]),np.reshape(p3x,[-1,1]),np.reshape(p3y,[-1,1]),sectionFeatures],1)
+sectionFeatures = np.genfromtxt('../features/test_section_features_bis.csv', delimiter=",")
+segmentFeatures = np.genfromtxt('../features/test_segment_features.csv', delimiter=",")
+toPredictFeatures = np.concatenate([sectionFeatures,segmentFeatures],1)
 
 def ridgeRegression(alphas, features, target, prediction=False, toPredict=np.empty(1, dtype=int)):
     # More info at :
@@ -59,8 +61,8 @@ def ridgeRegression(alphas, features, target, prediction=False, toPredict=np.emp
 
 # compute the regression for several alphas
 #alphas = [0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000]
-alphas = np.linspace(0.1, 1.7, 20)
-#alphas = [6]
+#alphas = np.linspace(0.1, 1.7, 20)
+alphas = [0.1,0.2,0.3,0.4,0.5,0.6,0.7]
 
 for alpha in alphas:
     #coefficient, alpha, score, intercept, predicted
@@ -89,9 +91,9 @@ for alpha in alphas:
             predictedRounded[id][2] = 'FALSE'
         else:
             predictedRounded[id][2] = 'TRUE'
-    
+
     # write in a csv file
-    result = open('../results/ridgeNoPrepro'+str(alpha)+'.csv','w')
+    result = open('../results/ridgeSectionAndSegmentBis_'+str(alpha)+'.csv','w')
     result.write("ID,Sample,Label,Predicted"+"\n")
     for id in range(TEST*3):
         if id%3==0:
