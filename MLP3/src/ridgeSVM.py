@@ -17,39 +17,22 @@ from sklearn import preprocessing
 from sklearn import linear_model
 
 ### Input (features and target) of the regression ###
-p2x = np.genfromtxt('../features/train_p2_x.csv', delimiter=",")
-p2y = np.genfromtxt('../features/train_p2_y.csv', delimiter=",")
-p3x = np.genfromtxt('../features/train_p3_x.csv', delimiter=",")
-p3y = np.genfromtxt('../features/train_p3_y.csv', delimiter=",")
-p2x = preprocessing.scale(p2x)
-p2y = preprocessing.scale(p2y)
-p3x = preprocessing.scale(p3x)
-p3y = preprocessing.scale(p3y)
-
 sectionFeatures = np.genfromtxt('../features/train_section_features.csv', delimiter=",")
-sectionFeatures = preprocessing.scale(sectionFeatures)
+segmentFeatures = np.genfromtxt('../features/train_segment_features.csv', delimiter=",")
 
-features = np.concatenate([np.reshape(p2x,[-1,1]),np.reshape(p2y,[-1,1]),np.reshape(p3x,[-1,1]),np.reshape(p3y,[-1,1]),sectionFeatures],1)
+features = np.concatenate([sectionFeatures, segmentFeatures],1)
+
+# Features for the prediction
+# Read features of the test set to predict
+
+sectionFeatures = np.genfromtxt('../features/test_section_features.csv', delimiter=",")
+segmentFeatures = np.genfromtxt('../features/test_segment_features.csv', delimiter=",")
+
+toPredictFeatures = np.concatenate([sectionFeatures,segmentFeatures],1)
 
 # Targets for Ridge and SVM multi labels
 targetSVM = np.genfromtxt('../data/targetsSVM.csv', delimiter=",")
 targetRidge = np.genfromtxt('../data/targets.csv', delimiter=",")
-
-### Features for the prediction ###
-p2x = np.genfromtxt('../features/test_p2_x.csv', delimiter=",")
-p2y = np.genfromtxt('../features/test_p2_y.csv', delimiter=",")
-p3x = np.genfromtxt('../features/test_p3_x.csv', delimiter=",")
-p3y = np.genfromtxt('../features/test_p3_y.csv', delimiter=",")
-p2x = preprocessing.scale(p2x)
-p2y = preprocessing.scale(p2y)
-p3x = preprocessing.scale(p3x)
-p3y = preprocessing.scale(p3y)
-
-sectionFeatures = np.genfromtxt('../features/test_section_features.csv', delimiter=",")
-sectionFeatures = preprocessing.scale(sectionFeatures)
-
-toPredictFeatures = np.concatenate([np.reshape(p2x,[-1,1]),np.reshape(p2y,[-1,1]),np.reshape(p3x,[-1,1]),np.reshape(p3y,[-1,1]),sectionFeatures],1)
-
 
 ### SVM classification ###
 def svmclassification(features, targets, C=1, kernel='rbf', degree=3, gamma='auto', decision_function_shape=None, prediction=False, toPredict=np.empty(1, dtype=int)):
@@ -168,18 +151,17 @@ probaSVMFull = np.insert(probaSVM, 1, 0, axis =1)
 probaSVMFull = np.insert(probaSVMFull, 5, 0, axis =1)
 
 # We transform the class probabilities of SVM for 8 classes into a subset of 3 classes thanks to the transformation matrix matrixOfTransformation
-column1 =  np.transpose(np.array([1, 1, 1, 1, 0, 0, 0, 0]))
-column2 =  np.transpose(np.array([1, 1, 0, 0, 1, 1, 0, 0]))
-column3 =  np.transpose(np.array([1, 0, 1, 0, 1, 0, 1, 0]))
+column1 =  np.transpose(np.array([0, 0, 0, 0, 1, 1, 1, 1]))
+column2 =  np.transpose(np.array([0, 0, 1, 1, 0, 0, 1, 1]))
+column3 =  np.transpose(np.array([0, 1, 0, 1, 0, 1, 0, 1]))
 matrixOfTransformation =  [[0 for i in xrange(3)] for i in xrange(8)]
 matrixOfTransformation = np.concatenate([np.reshape(column1,[-1,1]),np.reshape(column2,[-1,1]),np.reshape(column3,[-1,1])],1)
 
 probaSVMTransformed =  [[0 for i in xrange(3)] for i in xrange(TEST)]
 probaSVMTransformed = np.dot(probaSVMFull, matrixOfTransformation)
 probaSVMTransformed = np.array(probaSVMTransformed)
-
-#print(probaSVMTransformed)
-#print(probaSVMTransformed.shape)
+print(probaSVMTransformed)
+print(probaSVMTransformed.shape)
 
 '''
 # We check that the probabilities are correct: we compute the complementary probabilities and by summing, we should always obtain 1
@@ -202,7 +184,7 @@ print(test)
 ### Weighted sum of ridge and SVM ###
 
 weightedProba = np.array([[0 for i in xrange(3)] for i in xrange(TEST)])
-weightedProba = 0.5*probaSVMTransformed + 0.5*probaRidgeTransformed
+weightedProba = 1*probaSVMTransformed + 0*probaRidgeTransformed
 #print("Final weighted first line:  "+str(weightedProba[0,:]))
 weightedProbaRounded = [[0 for i in xrange(3)] for i in xrange(TEST)]
 
@@ -231,11 +213,11 @@ result = open('../results/ridgeSVMc'+str(c)+'alpha'+str(alpha)+'.csv','w')
 result.write("ID,Sample,Label,Predicted"+"\n")
 for id in range(TEST*3):
     if id%3==0:
-        result.write(str(id)+","+str(id/3)+",gender,"+weightedProbaRounded[id/3][0]+','+str(probaSVMTransformed[id/3][0])+','+str(probaRidge[id/3][0])+','+str(probaRidgeTransformed[id/3][0])+','+str(weightedProba[id/3][0])+"\n")
+        result.write(str(id)+","+str(id/3)+",gender,"+weightedProbaRounded[id/3][0]+'\n')
     elif id%3==1:
-        result.write(str(id)+","+str(id/3)+",age,"+weightedProbaRounded[id/3][1]+','+str(probaSVMTransformed[id/3][1])+','+str(probaRidge[id/3][1])+','+str(probaRidgeTransformed[id/3][1])+','+str(weightedProba[id/3][1])+"\n")
+        result.write(str(id)+","+str(id/3)+",age,"+weightedProbaRounded[id/3][1]+'\n')
     elif id%3==2:
-        result.write(str(id)+","+str(id/3)+",health,"+weightedProbaRounded[id/3][2]+','+str(probaSVMTransformed[id/3][2])+','+str(probaRidge[id/3][2])+','+str(probaRidgeTransformed[id/3][2])+','+str(weightedProba[id/3][2])+"\n")
+        result.write(str(id)+","+str(id/3)+",health,"+weightedProbaRounded[id/3][2]+'\n')
     else:
         print("Error during prediction for id: "+str(id))
         result.write("ERROR,ERROR,ERROR,ERROR"+"\n")

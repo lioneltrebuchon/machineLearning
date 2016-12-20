@@ -1,6 +1,6 @@
 ###########################################################################################################################
 
-# Python script which computes all the section features of the train/test set and save them in 1 .csv file
+# Python script which computes all the segment features of the train/test set and save them in 1 .csv file
 
 ###########################################################################################################################
 
@@ -11,20 +11,6 @@ import nibabel as nib
 import matplotlib.pyplot as plt'''
 from detect_peaks import detect_peaks
 import sys
-
-imagesSet = "train"
-if len(sys.argv)>1:
-    imagesSet = sys.argv[1]
-if imagesSet == "test":
-    N_IMAGES = 138
-else:
-    N_IMAGES = 278
-firstImage = '1'
-if len(sys.argv)>2:
-    firstImage = sys.argv[2]
-lastImage = str(N_IMAGES)
-if len(sys.argv)>3:
-    lastImage = sys.argv[3]
 
 #''' (remove/add # to switch)
 X = 176
@@ -40,6 +26,20 @@ Z = 50
 N_SECTIONS = 5
 #'''
 
+imagesSet = "train"
+if len(sys.argv)>1:
+    imagesSet = sys.argv[1]
+if imagesSet == "test":
+    N_IMAGES = 138
+else:
+    N_IMAGES = 278
+firstImage = '1'
+if len(sys.argv)>2:
+    firstImage = sys.argv[2]
+lastImage = str(N_IMAGES)
+if len(sys.argv)>3:
+    lastImage = sys.argv[3]
+
 sizeSectionX = X/N_SECTIONS
 sizeSectionY = Y/N_SECTIONS
 sizeSectionZ = Z/N_SECTIONS
@@ -47,7 +47,7 @@ sizeSectionZ = Z/N_SECTIONS
 images = [None]*N_IMAGES
 data = [None]*N_IMAGES
 
-featuresFile = open('../features/segment/'+imagesSet+'_segment_features_from'+firstImage+'to'+lastImage+'.csv','w')
+featuresFile = open('../features/segment/'+imagesSet+'_segment32_features_from'+firstImage+'to'+lastImage+'.csv','w')
 
 for i in xrange(int(firstImage)-1,min(int(lastImage), N_IMAGES)):
     print("\n\nComputing features of "+imagesSet+str(i+1)+"...")

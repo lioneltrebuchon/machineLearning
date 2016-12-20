@@ -16,37 +16,21 @@ from sklearn import linear_model
 from sklearn import preprocessing
 
 # Input (features and target) of the regression
-p2x = np.genfromtxt('../features/train_p2_x.csv', delimiter=",")
-p2y = np.genfromtxt('../features/train_p2_y.csv', delimiter=",")
-p3x = np.genfromtxt('../features/train_p3_x.csv', delimiter=",")
-p3y = np.genfromtxt('../features/train_p3_y.csv', delimiter=",")
-p2x = preprocessing.scale(p2x)
-p2y = preprocessing.scale(p2y)
-p3x = preprocessing.scale(p3x)
-p3y = preprocessing.scale(p3y)
 
-sectionFeatures = np.genfromtxt('../features/train_section_features.csv', delimiter=",")
-sectionFeatures = preprocessing.scale(sectionFeatures)
+sectionFeatures = preprocessing.scale(np.genfromtxt('../features/train_section_features.csv', delimiter=","))
+segmentFeatures = preprocessing.scale(np.genfromtxt('../features/train_segment_features.csv', delimiter=","))
 
-features = np.concatenate([np.reshape(p2x,[-1,1]),np.reshape(p2y,[-1,1]),np.reshape(p3x,[-1,1]),np.reshape(p3y,[-1,1]),sectionFeatures],1)
+features = np.concatenate([sectionFeatures, segmentFeatures],1)
 
 target = np.genfromtxt('../data/targets.csv', delimiter=",")
 
 # Features for the prediction
 # Read features of the test set to predict
-p2x = np.genfromtxt('../features/test_p2_x.csv', delimiter=",")
-p2y = np.genfromtxt('../features/test_p2_y.csv', delimiter=",")
-p3x = np.genfromtxt('../features/test_p3_x.csv', delimiter=",")
-p3y = np.genfromtxt('../features/test_p3_y.csv', delimiter=",")
-p2x = preprocessing.scale(p2x)
-p2y = preprocessing.scale(p2y)
-p3x = preprocessing.scale(p3x)
-p3y = preprocessing.scale(p3y)
 
-sectionFeatures = np.genfromtxt('../features/test_section_features.csv', delimiter=",")
-sectionFeatures = preprocessing.scale(sectionFeatures)
+sectionFeatures = preprocessing.scale(np.genfromtxt('../features/test_section_features.csv', delimiter=","))
+segmentFeatures = preprocessing.scale(np.genfromtxt('../features/test_segment_features.csv', delimiter=","))
 
-toPredictFeatures = np.concatenate([np.reshape(p2x,[-1,1]),np.reshape(p2y,[-1,1]),np.reshape(p3x,[-1,1]),np.reshape(p3y,[-1,1]),sectionFeatures],1)
+toPredictFeatures = np.concatenate([sectionFeatures,segmentFeatures],1)
 
 def ridgeRegression(alphas, features, target, prediction=False, toPredict=np.empty(1, dtype=int)):
     # More info at :
@@ -74,7 +58,8 @@ def ridgeRegression(alphas, features, target, prediction=False, toPredict=np.emp
 # compute the regression for several alphas
 #alphas = [0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000]
 #alphas = np.linspace(0.1, 1.7, 20)
-alphas = [0.5]
+
+alphas = [0.19]
 
 for alpha in alphas:
     #coefficient, alpha, score, intercept, predicted
@@ -105,17 +90,18 @@ for alpha in alphas:
             predictedRounded[id][2] = 'FALSE'
         else:
             predictedRounded[id][2] = 'TRUE'
-    
+
+    print(predictedRounded)
     # write in a csv file
-    result = open('../results/ridgeNoPrepro'+str(alpha)+'.csv','w')
+    result = open('../results/ridgeSectionAndSegmentScale_'+str(alpha)+'.csv','w')
     result.write("ID,Sample,Label,Predicted"+"\n")
     for id in range(TEST*3):
         if id%3==0:
-            result.write(str(id)+","+str(id/3)+",gender,"+predictedRounded[id/3][0]+','+str(predicted[id/3][0])+"\n")
+            result.write(str(id)+","+str(id/3)+",gender,"+predictedRounded[id/3][0]+"\n")
         elif id%3==1:
-            result.write(str(id)+","+str(id/3)+",age,"+predictedRounded[id/3][1]+','+str(predicted[id/3][1])+"\n")
+            result.write(str(id)+","+str(id/3)+",age,"+predictedRounded[id/3][1]+"\n")
         elif id%3==2:
-            result.write(str(id)+","+str(id/3)+",health,"+predictedRounded[id/3][2]+','+str(predicted[id/3][2])+"\n")
+            result.write(str(id)+","+str(id/3)+",health,"+predictedRounded[id/3][2]+"\n")
         else:
             print("Error during prediction for id: "+str(id))
             result.write("ERROR,ERROR,ERROR,ERROR"+"\n")

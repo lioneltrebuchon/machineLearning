@@ -94,9 +94,10 @@ for c in clist:
     if prediction==True:
         predicted = results['Predicted']
         probab = results['Probabilities']
-
+        print(predicted)
+        print(probab)
         # Transform the 7 multi-classes in 3 binary subclasses
-        predictedTransf = [[0 for i in xrange(3)] for i in xrange(TEST)]
+        predictedTransf = [['' for i in xrange(3)] for i in xrange(TEST)]
         for id in range(TEST):
             if predicted[id]==0:
                 predictedTransf[id][0] = 'FALSE'
@@ -136,6 +137,7 @@ for c in clist:
                 predictedTransf[id][2] = 'ERROR'
                 print("ERROR for id: "+str(id))
 
+        print(predictedTransf)
         # write in a csv file
         result = open('../results/SVM'+kernel+str(c)+'.csv','w')
         result.write("ID,Sample,Label,Predicted"+"\n")
@@ -150,4 +152,3 @@ for c in clist:
                     print("Error during prediction for id: "+str(id))
                     result.write("ERROR,ERROR,ERROR,ERROR"+"\n")
         result.close()
-
