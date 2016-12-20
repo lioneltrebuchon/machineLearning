@@ -72,14 +72,9 @@ for i in xrange(int(firstImage)-1,min(int(lastImage), N_IMAGES)):
             valleyIndexes=detect_peaks(hist[0], mpd = len(hist[0])/4, valley=True, show=False)
             peakIndexes=detect_peaks(hist[0], mph = 1000, mpd = len(hist[0])/5-5, valley=False, show=False)
             minV = 20000
-            if len(peakIndexes)==3: #the first peak doesn't exist each time
+            if len(peakIndexes)>1: #the first peak doesn't exist each time
                 for v in valleyIndexes:
-                    if v > peakIndexes[1] and v < peakIndexes[2] and hist[0][v] < minV:
-                        threshold = hist[1][v]
-                        minV = hist[0][v]
-            elif len(peakIndexes)==2: #the first peak doesn't exist each time
-                for v in valleyIndexes:
-                    if v > peakIndexes[0] and v < peakIndexes[1] and hist[0][v] < minV:
+                    if v > peakIndexes[len(peakIndexes)-2] and v < peakIndexes[len(peakIndexes)-1] and hist[0][v] < minV:
                         threshold = hist[1][v]
                         minV = hist[0][v]
             print("threshold = "+str(threshold))
