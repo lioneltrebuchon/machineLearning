@@ -1,5 +1,0 @@
-- SVM binaire : trouvé les meilleurs paramètres : [0.0035,0.0014,0.0002]
-- SVM binaire : differences entre predictions et probabilités arrondies ??
-    (résultats avec proba arrondies un peu moins bons) => version bis, pas de changement
-- SVM multiclasses : mieux je pense, mais on ne peut pas obtenir SVM binaires à partir de ce dernier
-- Moyenne marche, mais moins bien que juste Ridge
