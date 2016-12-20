@@ -13,27 +13,23 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import sklearn as sk
 from sklearn import linear_model
-
+from sklearn import preprocessing
 
 # Input (features and target) of the regression
-p2x = np.genfromtxt('../features/train_p2_x.csv', delimiter=",")
-p2y = np.genfromtxt('../features/train_p2_y.csv', delimiter=",")
-p3x = np.genfromtxt('../features/train_p3_x.csv', delimiter=",")
-p3y = np.genfromtxt('../features/train_p3_y.csv', delimiter=",")
-sectionFeatures = np.genfromtxt('../features/train_section_features_bis.csv', delimiter=",")
-segmentFeatures = np.genfromtxt('../features/train_segment_features.csv', delimiter=",")
-features = np.concatenate([sectionFeatures,segmentFeatures],1)
+
+sectionFeatures = preprocessing.scale(np.genfromtxt('../features/train_section_features.csv', delimiter=","))
+segmentFeatures = preprocessing.scale(np.genfromtxt('../features/train_segment_features.csv', delimiter=","))
+
+features = np.concatenate([sectionFeatures, segmentFeatures],1)
 
 target = np.genfromtxt('../data/targets.csv', delimiter=",")
 
 # Features for the prediction
 # Read features of the test set to predict
-p2x = np.genfromtxt('../features/test_p2_x.csv', delimiter=",")
-p2y = np.genfromtxt('../features/test_p2_y.csv', delimiter=",")
-p3x = np.genfromtxt('../features/test_p3_x.csv', delimiter=",")
-p3y = np.genfromtxt('../features/test_p3_y.csv', delimiter=",")
-sectionFeatures = np.genfromtxt('../features/test_section_features_bis.csv', delimiter=",")
-segmentFeatures = np.genfromtxt('../features/test_segment_features.csv', delimiter=",")
+
+sectionFeatures = preprocessing.scale(np.genfromtxt('../features/test_section_features.csv', delimiter=","))
+segmentFeatures = preprocessing.scale(np.genfromtxt('../features/test_segment_features.csv', delimiter=","))
+
 toPredictFeatures = np.concatenate([sectionFeatures,segmentFeatures],1)
 
 def ridgeRegression(alphas, features, target, prediction=False, toPredict=np.empty(1, dtype=int)):
@@ -62,13 +58,16 @@ def ridgeRegression(alphas, features, target, prediction=False, toPredict=np.emp
 # compute the regression for several alphas
 #alphas = [0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000]
 #alphas = np.linspace(0.1, 1.7, 20)
-alphas = [0.1,0.2,0.3,0.4,0.5,0.6,0.7]
+
+alphas = [0.19]
 
 for alpha in alphas:
     #coefficient, alpha, score, intercept, predicted
     print("Start Ridge regression with different alphas "+str(alpha))
     results = ridgeRegression([alpha], features, target, True, toPredict=toPredictFeatures)
     predicted = results['Predicted']
+
+    print(predicted)
 
     predictedRounded = [[0 for i in xrange(3)] for i in xrange(TEST)]
 
@@ -92,8 +91,9 @@ for alpha in alphas:
         else:
             predictedRounded[id][2] = 'TRUE'
 
+    print(predictedRounded)
     # write in a csv file
-    result = open('../results/ridgeSectionAndSegmentBis_'+str(alpha)+'.csv','w')
+    result = open('../results/ridgeSectionAndSegmentScale_'+str(alpha)+'.csv','w')
     result.write("ID,Sample,Label,Predicted"+"\n")
     for id in range(TEST*3):
         if id%3==0:

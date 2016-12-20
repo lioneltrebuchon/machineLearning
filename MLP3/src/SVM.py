@@ -13,13 +13,21 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import sklearn as sk
 from sklearn import svm
+from sklearn import preprocessing
 
 # Input (features and target) of the regression
 p2x = np.genfromtxt('../features/train_p2_x.csv', delimiter=",")
 p2y = np.genfromtxt('../features/train_p2_y.csv', delimiter=",")
 p3x = np.genfromtxt('../features/train_p3_x.csv', delimiter=",")
 p3y = np.genfromtxt('../features/train_p3_y.csv', delimiter=",")
+p2x = preprocessing.scale(p2x)
+p2y = preprocessing.scale(p2y)
+p3x = preprocessing.scale(p3x)
+p3y = preprocessing.scale(p3y)
+
 sectionFeatures = np.genfromtxt('../features/train_section_features.csv', delimiter=",")
+sectionFeatures = preprocessing.scale(sectionFeatures)
+
 features = np.concatenate([np.reshape(p2x,[-1,1]),np.reshape(p2y,[-1,1]),np.reshape(p3x,[-1,1]),np.reshape(p3y,[-1,1]),sectionFeatures],1)
 
 target = np.genfromtxt('../data/targetsSVM.csv', delimiter=",")
@@ -30,91 +38,66 @@ p2x = np.genfromtxt('../features/test_p2_x.csv', delimiter=",")
 p2y = np.genfromtxt('../features/test_p2_y.csv', delimiter=",")
 p3x = np.genfromtxt('../features/test_p3_x.csv', delimiter=",")
 p3y = np.genfromtxt('../features/test_p3_y.csv', delimiter=",")
+p2x = preprocessing.scale(p2x)
+p2y = preprocessing.scale(p2y)
+p3x = preprocessing.scale(p3x)
+p3y = preprocessing.scale(p3y)
+
 sectionFeatures = np.genfromtxt('../features/test_section_features.csv', delimiter=",")
+sectionFeatures = preprocessing.scale(sectionFeatures)
+
 toPredictFeatures = np.concatenate([np.reshape(p2x,[-1,1]),np.reshape(p2y,[-1,1]),np.reshape(p3x,[-1,1]),np.reshape(p3y,[-1,1]),sectionFeatures],1)
 
 def svmclassification(features, targets, C=1, kernel='rbf', degree=3, gamma='auto', decision_function_shape=None, prediction=False, toPredict=np.empty(1, dtype=int)):
-    # More info at:
     # http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html#sklearn.svm.SVC
 
-    # Parameters:
-    # Constant C : penalty parameter of the error term
-    # kernel function used for the classification. It must be one of 'linear', 'poly', 'rbf', 'sigmoid', 'precomputed' or a callable
-    # gamma: kernel coefficient (float) for 'rbf', 'poly' and 'sigmoid'.If gamma is 'auto' then 1 / n_features will be used instead.
-    # decision_function_shape returns a one-vs-rest (ovr) or the one-vs-one (ovo) decision 		# function (by default with None)
-
     # We set up the model
-    modelSVM = svm.SVC(C=C, kernel=kernel, degree=degree, gamma=gamma, decision_function_shape=decision_function_shape)
+    modelSVM = svm.SVC(C=C, kernel=kernel, degree=degree, gamma=gamma, decision_function_shape=decision_function_shape, probability=True)
 
     # We compute the model
     modelSVM.fit(features, targets)
 
     # Compute the distance of the samples X to the separating hyperplane.
-    # Return : array-like, shape (n_samples,)
     dist = modelSVM.decision_function(features)
 
     # We compute the score (mean accuracy wrt. to the real output targets)
     # Not very relevant as we compute a score over the training set.
     scoreFinal = modelSVM.score(features, targets)
 
-    # Attributs:
-    # Support vectors support_vectors_ : array-like, shape = [n_SV, n_features]
-    # with indices support_ : array-like, shape = [n_SV]
-    # Number of support vectors for each class n_support_ : array-like, dtype=int32, shape = [2]
-    # Coefficients of the support vector in the decision function dual_coef_ : array, shape = [1, n_SV]
-    # Constants in decision function intercept_ : array, shape = [1]
-
-    #print("SV: {0} SV indices: {1} SV repartition: {2} SV coefficients: {3} Intercept: {4} Score: {5}".format(modelSVM.support_vectors_, modelSVM.support_, modelSVM.n_support_, modelSVM.dual_coef_, modelSVM.intercept_, scoreFinal))
+    #print("SV repartition: {0} Score: {1} Coefficients: {2} Intercept: {3}".format(modelSVM.n_support_, scoreFinal, modelSVM.coef_, modelSVM.intercept_))
 
     print("SV repartition: {0} Score: {1}".format(modelSVM.n_support_, scoreFinal))
 
     # Prediction
     if prediction==True:
-        predictionOutput = (modelSVM.predict(toPredict))
-        return {'SV': modelSVM.support_vectors_, 'SV indices': modelSVM.support_, 'SV repartition': modelSVM.n_support_, 'SV coefficients': modelSVM.dual_coef_, 'Intercept': modelSVM.intercept_, 'Score': scoreFinal, 'Predicted': predictionOutput}
+        predictionOutput = modelSVM.predict(toPredict)
+        prob = modelSVM.predict_proba(toPredict)
+        return {'SV': modelSVM.support_vectors_, 'SV indices': modelSVM.support_, 'SV repartition': modelSVM.n_support_, 'Coefficients': modelSVM.coef_, 'Intercept': modelSVM.intercept_, 'Score': scoreFinal, 'Predicted': predictionOutput, 'Probabilities': prob}
     else:
-        return {'SV': modelSVM.support_vectors_, 'SV indices': modelSVM.support_, 'SV repartition': modelSVM.n_support_, 'SV coefficients': modelSVM.dual_coef_, 'Intercept': modelSVM.intercept_, 'Score': scoreFinal}
+        return {'SV': modelSVM.support_vectors_, 'SV indices': modelSVM.support_, 'SV repartition': modelSVM.n_support_, 'Coefficients': modelSVM.coef_, 'Intercept': modelSVM.intercept_, 'Score': scoreFinal}
 
-# compute the regression for several C
-#c = [0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000]
-#c = np.linspace(0.00000000001,0.0000001,10001)
-#c = [0.000001]
+#clist = [0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000]
+#clist = np.linspace(0.0008, 0.001, 11)
+clist = [0.001]
 kernel='linear'
 
-for n in range(-5, 5):
-    c = 10**n
+for c in clist:
+#for n in range(-7, 7):
+    #c = 10**n
     print("Start SVM classification with C = "+str(c))
-
-    '''
-    print(features.shape)
-    print(target.shape)
-    print(toPredictFeatures.shape)
-    print(features)
-    print(target)
-    print(c)
-    print(kernel)
-    print(toPredictFeatures)
-    '''
 
     prediction = True
     #results = svmclassification(features, targets, C=c, kernel=kernel, degree=2, gamma='auto', decision_function_shape=None, prediction=False, toPredict=np.empty(1, dtype=int))
-    results = svmclassification(features, targets=target, C=c, kernel=kernel, degree=3, gamma='auto', decision_function_shape=None, prediction=True, toPredict=toPredictFeatures)
-    
-    '''
-    print(results['Predicted'].shape)
-    print(results['Predicted'])
-    predicted = results['Predicted']
-    print("lol")
-    print(predicted)
-    print(predicted.shape)
-    '''
+    results = svmclassification(features, targets=target, C=c, kernel=kernel, degree=2, gamma='auto', decision_function_shape=None, prediction=True, toPredict=toPredictFeatures)
 
     # write in a csv file
     if prediction==True:
         predicted = results['Predicted']
-
+        probab = results['Probabilities']
+        print(predicted)
+        print(probab)
         # Transform the 7 multi-classes in 3 binary subclasses
-        predictedTransf = [[0 for i in xrange(3)] for i in xrange(TEST)]
+        predictedTransf = [['' for i in xrange(3)] for i in xrange(TEST)]
         for id in range(TEST):
             if predicted[id]==0:
                 predictedTransf[id][0] = 'FALSE'
@@ -154,6 +137,7 @@ for n in range(-5, 5):
                 predictedTransf[id][2] = 'ERROR'
                 print("ERROR for id: "+str(id))
 
+        print(predictedTransf)
         # write in a csv file
         result = open('../results/SVM'+kernel+str(c)+'.csv','w')
         result.write("ID,Sample,Label,Predicted"+"\n")
@@ -168,4 +152,3 @@ for n in range(-5, 5):
                     print("Error during prediction for id: "+str(id))
                     result.write("ERROR,ERROR,ERROR,ERROR"+"\n")
         result.close()
-
