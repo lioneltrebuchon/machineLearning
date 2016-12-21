@@ -1,5 +1,5 @@
 ########################################################################
-#               Ridge regression cross val for different Alphas        #
+#               Ridge regression with cross validation                 #
 ########################################################################
 
 TEST=138
@@ -24,26 +24,28 @@ def ridgeRegression(alphas, features, target, prediction=False, toPredict=np.emp
         return {'Coefficient': modelRidge.coef_, 'Alpha': modelRidge.alpha_, 'Score': scoreFinal, 'Intercept': modelRidge.intercept_}
 
 ### Features for the reduction
-sectionFeatures = np.genfromtxt('../features/train_section_features.csv', delimiter=",")
-segmentFeatures = np.genfromtxt('../features/train_segment_features.csv', delimiter=",")
+sectionFeatures = np.genfromtxt('features/train_section_features.csv', delimiter=",")
+segmentFeatures = np.genfromtxt('features/train_segment_features.csv', delimiter=",")
 features = np.concatenate([sectionFeatures, segmentFeatures],1)
 
 '''
 ### Features for the prediction
-sectionFeatures = np.genfromtxt('../features/test_section_features.csv', delimiter=",")
-segmentFeatures = np.genfromtxt('../features/test_segment_features.csv', delimiter=",")
+sectionFeatures = np.genfromtxt('features/test_section_features.csv', delimiter=",")
+segmentFeatures = np.genfromtxt('features/test_segment_features.csv', delimiter=",")
 toPredictFeatures = np.concatenate([sectionFeatures,segmentFeatures],1)
 '''
 
 ### Targets
-targets = np.genfromtxt('../data/targets.csv', delimiter=",")
-
-### Cross Validation
-mask = np.ones((TRAIN),dtype=bool)
+targets = np.genfromtxt('data/targets.csv', delimiter=",")
 
 for alpha in ALPHAS:
+
+    ### Cross Validation
     print("Start cross validation with alpha = "+str(alpha))
+
+    mask = np.ones((TRAIN),dtype=bool)
     error = 0
+
     for idx in range(TRAIN):
         mask[idx] = False
 
