@@ -5,7 +5,7 @@
 TEST=138
 TRAIN=278
 
-ALPHAS = [0.4]
+ALPHALISTS = [[0.4,0.4,0.4]]
 
 import numpy as np
 import nibabel as nib
@@ -36,16 +36,18 @@ toPredictFeatures = np.concatenate([sectionFeatures,segmentFeatures],1)
 ### Targets
 targets = np.genfromtxt('data/targets.csv', delimiter=",")
 
-for alpha in ALPHAS:
-    ### Ridge regression
-    print("Start Ridge regression with alpha = "+str(alpha))
-    ridgeResults = ridgeRegression([alpha], features, targets, True, toPredict=toPredictFeatures)
-    ridgePredictions = ridgeResults['Predicted']
+for alphaList in ALPHALISTS:
+    ### Ridge regressions
+    ridgePredictions = [[],[],[]]
+    for charac in [0,1,2]:
+        print("Start Ridge regression of characteristic "+str(charac)+" with alpha = "+str(alphaList[charac]))
+        ridgeResults = ridgeRegression([alphaList[charac]], features, targets[:,charac], True, toPredict=toPredictFeatures)
+        ridgePredictions[charac] = ridgeResults['Predicted']
 
     ### Write in a csv file
-    result = open('results/ridge_'+str(alpha)+'.csv','w')
+    result = open('results/ridge_'+str(alphaList)+'.csv','w')
     result.write("ID,Sample,Label,Predicted"+"\n")
     characNames = [',gender,',',age,',',health,']
     for id in range(TEST*3):
-        result.write(str(id)+','+str(id/3)+characNames[id%3]+str(ridgePredictions[id/3][id%3]>=0.5).upper()+"\n")
+        result.write(str(id)+','+str(id/3)+characNames[id%3]+str(ridgePredictions[id%3][id/3]>=0.5).upper()+"\n")
     result.close()
