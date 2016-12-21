@@ -5,7 +5,7 @@
 TEST=138
 TRAIN=278
 
-ALPHAS = [0.65,0.7,0.75,0.8,0.85]
+ALPHALISTS = [[0.75,0.75,0.75]]
 
 import numpy as np
 import nibabel as nib
@@ -38,10 +38,10 @@ toPredictFeatures = np.concatenate([sectionFeatures,segmentFeatures],1)
 ### Targets
 targets = np.genfromtxt('data/targets.csv', delimiter=",")
 
-for alpha in ALPHAS:
+for alphaList in ALPHALISTS:
 
     ### Cross Validation
-    print("Start cross validation with alpha = "+str(alpha))
+    print("Start cross validation with alphaList = "+str(alphaList))
 
     mask = np.ones((TRAIN),dtype=bool)
     error = 0
@@ -49,11 +49,11 @@ for alpha in ALPHAS:
     for idx in range(TRAIN):
         mask[idx] = False
 
-        #print("id "+str(idx))
-        ridgeResults = ridgeRegression([alpha], features[mask], targets[mask], True, toPredict=features[idx].reshape(1, -1))
-        ridgePredictions = ridgeResults['Predicted']
-        roundedPredictions = np.array(ridgePredictions > 0.5,dtype=int)
-        error += np.sum((roundedPredictions-targets[idx])**2)
+        print("id "+str(idx))
+        for charac in [0,1,2]:
+            ridgeResults = ridgeRegression([alphaList[charac]], features[mask], targets[mask,charac], True, toPredict=features[idx].reshape(1,-1))
+            prediction = ridgeResults['Predicted'][0]
+            error += (targets[idx,charac]-int(prediction >= 0.5))**2
 
         mask[idx] = True # reset
     error /= (3*TRAIN)
