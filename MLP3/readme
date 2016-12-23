@@ -41,24 +41,31 @@ wolffy@student.ethz.ch
 lionelt@student.ethz.ch
 
 Preprocessing
-normalization
+normalization, scaling
 
 Features
 histograms,slices,whitegreymatter,shape,segmentation
 
 Model
-ridgeregression,supportvectormachine,logisticregression
+ridgeregression,supportvectormachine ensemblemethods, leaveoneout
 
 Description
 
 Preprocessing
+The features used for the Ridge and the SVM classification are respectively normalized and scaled before performing the regression/classification. These preprocessing increase the performance of the algorithms.
 
 Features
+We used 2 type of features:
+1) We extracted for each image X slices in the X-X direction. We computed an histogram for each slice, with 40 bins and used the frequencies as features. This generates 40*X = X features per image.
+2) Yannick X
 
 Model
+We implemented 2 models. The first model is a Ridge regression which runs 3 different times. Each output is seen as the probability of belonging to the corresponding binary class. Thus, we give the labels 0 and 1 respectively for all output strictly below 0.5 and above 0.5. These 3 Ridge models have been optimized with a leave one out cross validation that we implemented and performed for each regression independently.. The second model is a binary SVM classification that runs 3 different times in order to label each image. The output is thus a boolean vector of dimension 3.
+The final model takes into account these 2 models. For each class, if the ouput is the same, we keep the output. If there is a difference, we foster the Ridge regression - X -.
+
 
 Postprocessing
-
+No specific postprocessing.
 
 ###################################################### OLD VERSION
 
