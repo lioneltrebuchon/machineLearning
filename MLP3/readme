@@ -1,41 +1,3 @@
-# The authors' emails go into the first lines, one email per line.
-# Make sure you provide the .ethz.ch email.
-#
-# Now comes the key section with the three subsections "Preprocessing",
-# "Features" and "Model". Leave the headlines as they are and only
-# modify the keys. Try to provide at least three informative keys per
-# subsection and separate the keys with commas ",".
-#
-# Each key should be single word or concatenation of several words,
-# e.g. crop, histogram, mutualinformationscore, linearregression, etc.
-#
-# The final section is "Description" which includes a verbose summary
-# with no strict formatting but make sure it has a reasonable minimum
-# length.
-
-author1@subdomain.ethz.ch
-author2@subdomain.ethz.ch
-author3@ethz.ch
-
-Preprocessing
-key1,key2,key3
-
-Features
-key1,key2,key3
-
-Model
-key1,key2,key3
-
-Description
-Verbose and detailed description of preprocessing, features, model and
-other things that are helpful to understand what was done exactly.
-E.g. if key1 = histogram for features, then the description might look
-like this: "We divide the image into 7x7x7 blocks and make a histogram
-with 10 bins for each of them. These histograms are then concatenated
-into a vector"
-
-###################################################### NEW VERSION
-
 bbidot@student.ethz.ch
 wolffy@student.ethz.ch
 lionelt@student.ethz.ch
@@ -47,7 +9,7 @@ Features
 histograms,slices,whitegreymatter,shape,segmentation
 
 Model
-ridgeregression,supportvectormachine ensemblemethods, leaveoneout
+ridgeregression,supportvectormachine, ensemblemethods, leaveoneout
 
 Description
 
@@ -57,45 +19,12 @@ The features used for the Ridge and the SVM classification are respectively norm
 Features
 We used 2 type of features:
 1) We extracted for each image X slices in the X-X direction. We computed an histogram for each slice, with 40 bins and used the frequencies as features. This generates 40*X = X features per image.
-2) Yannick X
+2) Yannick X for surface and perimeter
 
 Model
-We implemented 2 models. The first model is a Ridge regression which runs 3 different times. Each output is seen as the probability of belonging to the corresponding binary class. Thus, we give the labels 0 and 1 respectively for all output strictly below 0.5 and above 0.5. These 3 Ridge models have been optimized with a leave one out cross validation that we implemented and performed for each regression independently.. The second model is a binary SVM classification that runs 3 different times in order to label each image. The output is thus a boolean vector of dimension 3.
-The final model takes into account these 2 models. For each class, if the ouput is the same, we keep the output. If there is a difference, we foster the Ridge regression - X -.
-
+We implemented 2 models. The first model is a Ridge regression which runs 3 different times. Each output below 0 and above 1 is respectively truncated to 0 and 1. Thus, the output is a vector of dimension 3 that indicates the probability of belonging to each of the  binary classes. These 3 regressions have been optimized with a leave one out cross validation that we implemented and performed for each of them independently.
+The second model is a binary SVM classification that runs 3 different times in order to determine the probability of belonging to each of the 3 binary classes. Again, we obtain as output a vector of dimension 3. These 3 classifications were optimized independently with 3 leave one out cross validation.
+The final model takes into account these 2 models by simply summing their results. The final output is the sum of the 2 models and corresponds to the probability of belonging to each of the 3 binary classes.
 
 Postprocessing
-No specific postprocessing.
-
-###################################################### OLD VERSION
-
-bbidot@student.ethz.ch
-wolffy@student.ethz.ch
-lionelt@student.ethz.ch
-
-Preprocessing
-
-
-Features
-histograms,peakintensities,peakfrequencies,slices,cubes,fourieranalysis
-
-Model
-ridgeregression,supportvectormachine
-
-Description
-
-Preprocessing
-No preprocessing has been done.
-
-Features
-We extracted 2 type of features: intensities and frequencies of histograms; and peaks of histograms.
-1) We first computed a global histogram with 200 bins for each image. Using a peak detection algorithm, we determined the main peaks of each histogram (as the algorithm was not working perfectly and by lack of time, we had to perform a manual check). There were always 2 or 3 peaks. By considering the last 2 peaks (i.e. the 2 peaks with highest pixel intensities), we extracted both their associated pixel intensity and pixel frequency. This gave us 4 features per image.
-2) We then divided each image into 48 2-dimensional slices (16 slices per direction) where we averaged the pixels in one specific direction in order to have surfaces and not cubes. Thus, this generated 48 slices. We then determined their histograms, with 48 bins of same length, and extracted as features the associated frequencies. This gave us 48*48 = 2304 features per image.
-That's why we had at the end 2308 features in total per image.
-We tried 2 other approaches which were not conclusive: a Fourier analysis to get insight on the variance of the pixels and generating histograms from cubes instead of slices to have more local features.
-
-Model
-We tried a SVM classification but this didn't give us good results. We decided to change for a Ridge regression. Our cross-validation didn't give good results which made us think that our program was not correct. Thus, we had to optimize manually in order to determine the best regularizer.
-
-Postprocessing
-The Ridge regression gave us predictions for the 138 patient test. We applied a final postprocessing to these predictions. Qualitative analysis of the histograms plotted showed that a significant number of patients with only 2 peaks were healthy. Because the error on this observation was really low and lacking time for a more complex decision rule, we decided to apply this simple rule: images whose global histograms present only 2 peaks would be labelled 1 (i.e. healthy). Finally, because we didn't want any label outside of [0, 1], we forced predictions below 0 to 0 and predictions above 1 to 1.
+We assign the label following the probability of belonging to the given class by rounding the probability (<0.5 or >=0.5).
